@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Food Database | FITX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="#">Food Database</a></li>
+</ul>
+
+<div class="container">
+    <div class="form-card">
+        <h1>Search Food Items</h1>
+        <p>Get nutritional info from our API database.</p>
+
+        <form id="foodForm">
+            <input type="text" id="foodQuery" placeholder="Enter food name..." required>
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="foodResults" class="summary-card" style="margin-top:20px; display:none;">
+            <ul id="foodList"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('foodForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const query = document.getElementById('foodQuery').value;
+    const res = await fetch(`http://localhost:3000/api/food?name=${query}`);
+    const data = await res.json();
+
+    const list = document.getElementById('foodList');
+    list.innerHTML = '';
+    data.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - Calories: ${item.calories}`;
+        list.appendChild(li);
+    });
+    document.getElementById('foodResults').style.display = 'block';
+});
+</script>
+</body>
+</html>

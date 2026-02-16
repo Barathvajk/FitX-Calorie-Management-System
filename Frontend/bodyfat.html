@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Body Fat Calculator | FITX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="bmi.html">BMI Calculator</a></li>
+  <li><a class="active" href="#">Body Fat Calculator</a></li>
+</ul>
+
+<div class="container">
+    <div class="form-card">
+        <h1>Body Fat Calculator</h1>
+        <p>Estimate your body fat percentage to better understand your body composition.</p>
+
+        <form id="bodyFatForm">
+            <select id="gender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <input type="number" id="age" placeholder="Age" required>
+            <input type="number" id="weight" placeholder="Weight (kg)" required>
+            <input type="number" id="waist" placeholder="Waist circumference (cm)" required>
+            <button type="submit">Calculate Body Fat</button>
+        </form>
+
+        <div id="bodyFatResult" class="summary-card" style="margin-top:20px; display:none;">
+            <h2>Body Fat %:</h2>
+            <p id="bodyFatValue">0</p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('bodyFatForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const gender = document.getElementById('gender').value;
+    const weight = parseFloat(document.getElementById('weight').value);
+    const waist = parseFloat(document.getElementById('waist').value);
+
+    let bodyFat = 0;
+    if(gender === 'male'){
+        bodyFat = ((waist * 0.74) - (weight * 0.082 + 44.74)).toFixed(2);
+    } else {
+        bodyFat = ((waist * 0.74) - (weight * 0.082 + 34.89)).toFixed(2);
+    }
+
+    document.getElementById('bodyFatValue').textContent = bodyFat;
+    document.getElementById('bodyFatResult').style.display = 'block';
+});
+</script>
+</body>
+</html>

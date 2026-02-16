@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap"
+        rel="stylesheet">
+ <title></title>
+</head>
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family:'Agdasima';
+	}
+body{
+	overflow:hidden;
+}
+
+.container{
+			height: 100%;
+			width: 250px;
+			position: absolute;
+			background: white;
+			z-index: 1;
+			transition: 0.5s ease;
+			transform: translateX(-250px);
+		}
+.container .head{
+			color:white;
+			font-size: 20px;
+			font-weight: bold;
+			padding: 15px;
+			text-transform: uppercase;
+			text-align: center;
+			letter-spacing: 1px;
+			background:black;
+		}
+ol{
+			width:100%;
+			list-style:none;
+	}
+ol li{
+			display:block;
+			width:100%;
+}
+ol li a {
+    color: black;
+    padding: 15px 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 20px;
+    letter-spacing: 1px;
+    position: relative;
+    transition: color 0.3s, background-color 0.3s;
+    overflow: hidden;
+    text-transform: capitalize;
+}
+ol li a i {
+    width: 70px;
+    font-size: 25px;
+    text-align: center;
+    padding-left: 30px;
+    transition: transform 0.3s;
+}
+ol li:hover a {
+    background-color: #E5E7E9; /* Change the background color on hover */
+    color:black; /* Change the text color on hover */
+}
+
+input{
+			--webkit-appearance:none;
+			visibility:hidden;
+			display:none;
+}
+span{
+			position:absolute;
+			right:-40px;
+			top:10px;
+			font-size:25px;
+			border-radius:3px;
+			color:#fff;
+			padding:3px 8px;
+			cursor:pointer;
+			background-color:#000;
+}
+#bars{
+			background: black;
+		}
+#check:checked ~ .container{
+			transform: translateX(0);
+		}
+#check:checked ~ .container #bars{
+			display: none;
+		}
+section{
+			min-height: 100vh;
+			background: url(img.jpg);
+			background-position: center;
+			background-size: cover;
+			background-repeat: no-repeat; 
+			transition: 0.5s; 
+			filter: brightness(60%);
+}
+#check:checked ~ section{
+			transform:scale(1,2);
+			filter:brightness(20%);
+}
+.fas fa-qrcode li{
+	padding:30pxpx;
+}
+</style>
+<body>
+<input type="checkbox" name="" id="check">
+<div class="container">
+	<label for="check">
+		<span class="fas fa-times" id="times"></span>
+		<span class="fas fa-bars" id="bars"></span>
+	</label>
+	<div class="head">menu</div>
+		<ol>
+			<li><a href="#"><i class="fas fa-info"></i>Home</a></li>
+			<li><a href="Bmi_calc.html"><i class="fas fa-qrcode"></i>Check BMI</a></li>
+			<li><a href="#"><i class="fas fa-users"></i>Progress Reports</a></li>
+			<li><a href="#"><i class="fas fa-arrow-up"></i>Reminders</a></li>
+			<li><a href="#"><i class="fas fa-envelope"></i>Goal Settings</a><
+			<li><a href="#"><i class="fas fa-phone"></i>Contact</a></li>
+			
+		</ol>
+</div>
+<section></section>
+</body>
+</html>

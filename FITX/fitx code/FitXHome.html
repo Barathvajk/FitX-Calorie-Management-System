@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap"
+    rel="stylesheet">
+    <title>FITX</title>
+    <h1 style="text-align: center;background-color: black;color: white;">FIT<span style="color: lightgreen;">X</span></h1>
+</head>
+<style type="text/css">
+   body {
+    font-family: 'Poppins', sans-serif; /* Use Poppins font for body */
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* Light background color */
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1,
+h2 {
+    color: #333; /* Consistent dark text color for headings */
+    margin-bottom: 15px;
+}
+
+/* Navigation Bar */
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #222; /* Dark navigation bar background */
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-weight: 500; /* Slightly bold navigation text */
+}
+
+li a:hover:not(.active) {
+    background-color: #4CAF50; /* Green hover color for navigation links */
+    color: black;
+}
+
+.active {
+    background-color: #4CAF50; /* Green color for active navigation link */
+    color: black;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 20px 0;
+}
+
+h1 span {
+    color: #4CAF50; /* Green color for FITX logo */
+}
+
+/* Main Content */
+.summary,
+.meal-form,
+.summary-section {
+    background-color: white;
+    border-radius: 5px; /* Add rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.summary p,
+.summary-section p {
+    margin-bottom: 10px; /* Adjust paragraph spacing */
+}
+
+.meal-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500; /* Slightly bold for labels */
+}
+
+.meal-form input[type="text"],
+.meal-form input[type="number"],
+.meal-form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc; /* Add border for form elements */
+    border-radius: 3px; /* Rounded corners for form elements */
+}
+
+.meal-form button {
+    background-color: #4CAF50; /* Green color for buttons */
+    color: white;
+    cursor: pointer;
+}
+
+.meal-form button:hover {
+    background-color: #3e8e41; /* Darker green on hover */
+}
+
+.summary-section button {
+    background-color: #222; /* Dark button for summary section */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.summary-section button:hover {
+    background-color: #1a1a1a; /* Darker shade on hover */
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.footer-section {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.footer-section h3 {
+    margin-bottom: 10px;
+    color: white; /* White text for footer headings */
+}
+
+.footer-bottom {
+    margin-top: 20px;
+}
+
+
+</style>
+<body>
+    
+<ul>
+  <li><a class="active" href="#home">   Home   </a></li>
+  <li><a href="Bmi_calc.html">   BMI Calculator  </a></li>
+   <li><a href="bodyfat.html">   Body Fat Calculator   </a></li>
+  <li><a href="Calorie_calc.html">   Goal Plan   </a></li>
+  <li><a href="http://localhost:3000">Food Database</a>  </a></li>
+  <li><a href="http://localhost:3000/insight.html">Insight</a>  </a></li>
+  <li><a href="#about">   About us  </a></li>
+  <li><a href="#about">     Log Out  </a></li>
+</ul>
+<br>
+  <div class="container">
+        <h1>Welcome to FIT<span style="color: lightgreen;">X</span></h1.>
+        <p>Track your daily calorie intake and manage your diet effectively.</p>
+        <h2>Today's Summary</h2>
+        <div class="summary" id="summary">
+            <p><strong>Total Calories Consumed:</strong> <span id="totalCalories">0</span></p>
+            <p><strong>Remaining Calories:</strong> <span id="remainingCalories">0</span></p>
+            <p><strong>Goal Calories:</strong> <span id="goalCalories">2000</span></p>
+        </div>
+        <h2>Log Your Meals</h2>
+        <form id="mealForm" class="meal-form">
+            <label for="meal-name">Meal Name:</label>
+            <input type="text" id="meal-name" name="meal-name" required>
+            <label for="calories">Calories:</label>
+            <input type="number" id="calories" name="calories" required>
+            <button type="submit">Add Meal</button>
+        </form>
+    </div>
+    <div class="container">
+        <!-- Summary about API food databases -->
+        <div class="summary-section">
+            <h2>API Food Databases</h2>
+            <p>Utilize our extensive API food databases to search for and track the nutritional information of thousands of food items.</p>
+            <p>With our API integration, you can easily access up-to-date data to manage your meals accurately.</p>
+        </div>
+        
+        <!-- BMI Calculator -->
+        <div class="summary-section">
+            <h2>BMI Calculator</h2>
+            <p>Calculate your Body Mass Index (BMI) to assess your weight status and determine if you are underweight, normal weight, overweight, or obese.</p>
+            <button onclick="openBMIPage()">Calculate BMI</button>
+        </div>
+        
+        <!-- Body Fat Calculator -->
+        <div class="summary-section">
+            <h2>Body Fat Calculator</h2>
+            <p>Estimate your body fat percentage to better understand your body composition and set realistic fitness goals.</p>
+            <button onclick="openBodyFatPage()">Calculate Body Fat</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <br>
+    <br>
+    <br>
+<footer>
+    <div class="footer-content">
+        <div class="footer-section about">
+            <h3>About Us</h3>
+            <p>Tracking calories for healthier living</p>
+        </div>
+            <ul>
+            
+            </ul>
+        </div>
+        <div class="footer-section contact">
+            <h3>Contact Us</h3>
+            <p>Email: FITX123@gmail.com</p>
+            <p>Phone: 123-456-7890</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2024 Calorie Tracker | All rights reserved
+    </div>
+</footer>
+</body>
+</html>

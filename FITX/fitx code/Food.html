@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Search</title>
+    <link rel="stylesheet" href="food_css.css" />
+  </head>
+  <body>
+    <div>
+      <label for="foodInput">Enter the food name</label><br />
+      <input type="text" id="foodInput" />
+      <div id="suggestionsContainer"></div>
+    </div>
+
+    <div id="selectedFoodContainer">
+      <h2>Selected Food</h2>
+      <div id="selectedFoodDetails"></div>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+      <div id="progressText">0%</div>
+    </div>
+
+    <div id="goalContainer">
+      <p id="goalMessage"></p>
+    </div>
+
+    <div id="foodDetailsContainer">
+      <!-- Container to display food details -->
+    </div>
+
+    <div id="addToProgressContainer">
+      <!-- Container to display "Add to Progress" button and quantity input -->
+      <button onclick="getQuantity()">Get Quantity</button>
+      <input type="number" id="quantityInput" placeholder="Quantity" /><br />
+      <button id="addToProgressButton" onclick="addToProgressAction()">
+        Add to Progress
+      </button>
+    </div>
+
+    <script>
+      const appId = "25bc49f8"; // Add your Edamam App ID
+      const apiKey = "0a68b091476d4235ccd2c4a5ec259e6f";
+
+      const foodInput = document.getElementById("foodInput");
+      const suggestionsContainer = document.getElementById(
+        "suggestionsContainer"
+      );
+      const selectedFoodContainer = document.getElementById(
+        "selectedFoodContainer"
+      );
+      const selectedFoodDetails = document.getElementById(
+        "selectedFoodDetails"
+      );
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressText");
+      const goalContainer = document.getElementById("goalContainer");
+      const goalMessage = document.getElementById("goalMessage");
+      const foodDetailsContainer = document.getElementById(
+        "foodDetailsContainer"
+      );
+      const addToProgressContainer = document.getElementById(
+        "addToProgressContainer"
+      );
+      const quantityInput = document.getElementById("quantityInput");
+      const addToProgressButton = document.getElementById(
+        "addToProgressButton"
+      );
+
+      let totalCalories = 0;
+      let dailyGoal = 1860; // Set your daily calorie goal here
+
+      foodInput.addEventListener("input", function () {
+        const inputText = this.value.trim();
+
+        if (inputText === "") {
+          suggestionsContainer.innerHTML = "";
+          return;
+        }
+
+        const apiUrl = `https://api.edamam.com/api/food-database/parser?ingr=${inputText}&app_id=${appId}&app_key=${apiKey}`;
+
+        fetch(apiUrl)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.hints && data.hints.length > 0) {
+              const filteredSuggestions = data.hints
+                .filter((hint) =>
+                  hint.food.label
+                    .toLowerCase()
+                    .includes(inputText.toLowerCase())
+                )
+                .map((hint) => hint.food.label);
+
+              displaySuggestions(filteredSuggestions);
+            } else {
+              suggestionsContainer.innerHTML = "";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching suggestions:", error);
+            suggestionsContainer.innerHTML = "";
+          });
+      });
+
+      document.addEventListener("click", function (event) {
+        const isInputOrSuggestion =
+          event.target.closest("#foodInput") ||
+          event.target.closest("#suggestionsContainer");
+
+        if (!isInputOrSuggestion) {
+          suggestionsContainer.innerHTML = "";
+        }
+      });
+
+      function displaySuggestions(suggestions) {
+        suggestionsContainer.innerHTML = "";
+
+        suggestions.forEach((suggestion) => {
+          const suggestionElement = document.createElement("div");
+          suggestionElement.className = "suggestion";
+          suggestionElement.innerHTML = `
+                    <span>${suggestion}</span>
+                    <button onclick="displayFoodDetails('${suggestion}')">Details</button>
+                `;
+
+          suggestionsContainer.appendChild(suggestionElement);
+        });
+      }
+
+      function displaySelectedFoodDetails(selectedFood) {
+        selectedFoodContainer.style.display = "block";
+        selectedFoodDetails.innerHTML = `<p>Selected Food: ${selectedFood}</p>
+                                            <p>Details: Loading...</p>`;
+
+        const apiUrl = `https://api.edamam.com/api/food-database/parser?ingr=${selectedFood}&app_id=${appId}&app_key=${apiKey}`;
+
+        fetch(apiUrl)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.hints && data.hints.length > 0) {
+              const selectedFoodDetailsHtml = `<p>Calories: ${data.hints[0].food.nutrients.ENERC_KCAL}</p>
+                                                        <p>Carbs: ${data.hints[0].food.nutrients.CHOCDF}</p>
+                                                        <p>Protein: ${data.hints[0].food.nutrients.PROCNT}</p>
+                                                        <p>Fat: ${data.hints[0].food.nutrients.FAT}</p>`;
+              selectedFoodDetails.innerHTML = selectedFoodDetailsHtml;
+
+              // Update the progress bar and total calories
+              const calories = data.hints[0].food.nutrients.ENERC_KCAL || 0;
+              updateProgressBar(calories);
+              totalCalories += calories;
+
+              // Update the goal message
+              updateGoalMessage();
+
+              // Show the "Add to Progress" button and quantity input
+              addToProgressContainer.style.display = "block";
+            } else {
+              selectedFoodDetails.innerHTML = "<p>Details not available</p>";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching selected food details:", error);
+            selectedFoodDetails.innerHTML = "<p>Error fetching details</p>";
+          });
+      }
+
+      function displayFoodDetails(selectedFood) {
+        const apiUrl = `https://api.edamam.com/api/food-database/parser?ingr=${selectedFood}&app_id=${appId}&app_key=${apiKey}`;
+
+        fetch(apiUrl)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.hints && data.hints.length > 0) {
+              const foodDetailsHtml = `<p>Food: ${data.hints[0].food.label}</p>
+                                                <p>Calories: ${data.hints[0].food.nutrients.ENERC_KCAL}</p>
+                                                <p>Carbs: ${data.hints[0].food.nutrients.CHOCDF}</p>
+                                                <p>Protein: ${data.hints[0].food.nutrients.PROCNT}</p>
+                                                <p>Fat: ${data.hints[0].food.nutrients.FAT}</p>`;
+              foodDetailsContainer.innerHTML = foodDetailsHtml;
+              console.log(data.hints[0].food);
+              
+
+              // Show the "Add to Progress" button and quantity input
+              addToProgressContainer.style.display = "block";
+            } else {
+              foodDetailsContainer.innerHTML = "<p>Details not available</p>";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching food details:", error);
+            foodDetailsContainer.innerHTML = "<p>Error fetching details</p>";
+          });
+      }
+
+      function getQuantity() {
+        const quantity = prompt("Enter quantity:");
+        quantityInput.value = quantity || "";
+      }
+
+      function updateProgressBar(calories) {
+        const maxCalories = 1860; // Set a maximum value for the progress bar
+
+        // Calculate the percentage of calories consumed
+        const percentage = (totalCalories / maxCalories) * 100;
+
+        // Limit the width of the progress bar to 100%
+        const width = percentage > 100 ? 100 : percentage;
+
+        // Update the width of the progress bar and the text
+        progressBar.style.width = `${width}%`;
+        progressText.textContent = `${Math.round(percentage)}%`;
+
+        if (totalCalories >= dailyGoal) {
+          alert("Today's Calorie Goal Achieved!");
+        }
+      }
+
+      function updateGoalMessage() {
+        const remainingCalories = dailyGoal - totalCalories;
+        const goalMessageText =
+          remainingCalories >= 0
+            ? `Remaining calories to achieve your goal: ${remainingCalories}`
+            : `You have exceeded your goal by ${Math.abs(
+                remainingCalories
+              )} calories!`;
+
+        goalMessage.textContent = goalMessageText;
+      }
+
+      function addToProgressAction() {
+        const quantity = quantityInput.value;
+        if (!quantity || isNaN(quantity) || quantity <= 0) {
+          alert("Please enter a valid quantity.");
+          return;
+        }
+
+        // Add the food to the progress bar with the specified quantity
+        displaySelectedFoodDetails(foodInput.value);
+
+        // Clear food details container
+        foodDetailsContainer.innerHTML = "";
+
+        // Clear "Add to Progress" button and quantity input
+        addToProgressContainer.style.display = "none";
+        quantityInput.value = "";
+      }
+    </script>
+  </body>
+</html>

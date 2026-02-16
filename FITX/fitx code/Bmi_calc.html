@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BMI Calculator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        font-family: "Agdasima";
+      }
+
+      body {
+        background-color: #f4f4f4;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Updated justify-content */
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+        margin-left: 10%; /* Adjusted margin-left */
+      }
+
+      #calculator {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 300px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #result {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+
+      .right-image img {
+        width: 100%; /* Adjust the width of the image as needed */
+        height: 70vh;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>BMI Calculator</h1>
+      <div id="calculator">
+        <label for="weight">Weight (kg):</label>
+        <input
+          type="number"
+          id="weight"
+          placeholder="Enter your weight"
+          required
+        />
+
+        <label for="height">Height (cm):</label>
+        <input
+          type="number"
+          id="height"
+          placeholder="Enter your height"
+          required
+        />
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" placeholder="Enter your age" required />
+
+        <label for="gender">Gender:</label>
+        <select id="gender" required>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+
+        <button onclick="calculateBMI()">Calculate BMI</button>
+
+        <div id="result"></div>
+      </div>
+    </div>
+
+    <div class="right-image">
+      <img src="BMI.jpg" alt="Right Image" />
+      <!-- Replace 'your-image.jpg' with the path to your image -->
+    </div>
+    <script>
+      function calculateBMI() {
+        var weight = document.getElementById("weight").value;
+        var height = document.getElementById("height").value;
+        var age = document.getElementById("age").value;
+        var gender = document.getElementById("gender").value;
+
+        if (weight === "" || height === "" || age === "") {
+          alert("Please enter weight, height, and age.");
+          return;
+        }
+
+        var bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+        var interpretation = getInterpretation(bmi, age, gender);
+
+        displayResult(bmi, interpretation);
+      }
+
+      function displayResult(bmi, interpretation) {
+        var resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "Your BMI is: " + bmi;
+        resultDiv.innerHTML += "<br>" + interpretation;
+      }
+
+      function getInterpretation(bmi, age, gender) {
+        if (age < 18) {
+          // BMI interpretation for children and teenagers
+          if (gender === "male") {
+            if (bmi < 18.5) {
+              return "Underweight for age (male)";
+            } else if (bmi < 24.9) {
+              return "Healthy weight for age (male)";
+            } else if (bmi < 29.9) {
+              return "Overweight for age (male)";
+            } else {
+              return "Obese for age (male)";
+            }
+          } else if (gender === "female") {
+            if (bmi < 18.5) {
+              return "Underweight for age (female)";
+            } else if (bmi < 24.9) {
+              return "Healthy weight for age (female)";
+            } else if (bmi < 29.9) {
+              return "Overweight for age (female)";
+            } else {
+              return "Obese for age (female)";
+            }
+          }
+        } else {
+          // BMI interpretation for adults
+          if (gender === "male") {
+            if (bmi < 18.5) {
+              return "Underweight (male)";
+            } else if (bmi < 24.9) {
+              return "Healthy weight (male)";
+            } else if (bmi < 29.9) {
+              return "Overweight (male)";
+            } else {
+              return "Obese (male)";
+            }
+          } else if (gender === "female") {
+            if (bmi < 18.5) {
+              return "Underweight (female)";
+            } else if (bmi < 24.9) {
+              return "Healthy weight (female)";
+            } else if (bmi < 29.9) {
+              return "Overweight (female)";
+            } else {
+              return "Obese (female)";
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

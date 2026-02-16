@@ -1,0 +1,105 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+label {
+  margin-left: 104px;
+}
+
+#foodInput {
+  justify-content: center;
+  width: 50%;
+  margin-left: 90px;
+  padding: 8px;
+  margin-top: 90px;
+  border-radius: 15px;
+}
+
+#suggestionsContainer {
+  justify-content: center;
+  background-color: floralwhite;
+  border: 1px solid #ddd;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 78%;
+  margin-top: 5px;
+}
+
+.suggestion {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  background-color: lightgrey;
+}
+
+#selectedFoodContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#selectedFoodDetails {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#progressBarContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#progressBar {
+  background-color: #4caf50;
+  height: 20px;
+  border-radius: 5px;
+}
+
+#progressText {
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+#goalContainer {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#foodDetailsContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#addToProgressContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#quantityInput {
+  width: 50px;
+  margin-right: 10px;
+}
+
+#addToProgressButton {
+  padding: 8px 15px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#addToProgressButton:hover {
+  background-color: #45a049;
+}

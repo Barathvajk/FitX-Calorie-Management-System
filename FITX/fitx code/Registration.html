@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)file:///C:/Users/ARJUN/Documents/FITX/Registration.html -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap"
+        rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="./Registration_files/css2" rel="stylesheet">
+    <title>FIT-X</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Agdasima';
+            font-size: 25px;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+             font-family: 'Agdasima';
+            background: #dfdfdf;
+        }
+
+        .container {
+            position: relative;
+            max-width: 700px;
+            width: 100%;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .container header {
+        font-family: 'Impact', sans-serif;
+        font-size: 2rem;
+        color: black; /* Set FIT color to black */
+        text-align: center;
+    }
+
+    .container header span {
+        color: lightgreen;
+        font-size:2rem;
+        font-family: 'Impact', sans-serif;
+         text-align: center; /* Set X color to green */
+    }
+
+        .form .input-box {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .input-box label {
+            color: #333;
+        }
+
+        .form .input-box input,
+        .form .input-box select,
+        .form .input-box textarea {
+            position: relative;
+            height: 50px;
+            width: 100%;
+            outline: none;
+            font-size: 15px;
+            color: #707070;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.05);
+            padding: 0 15px;
+            margin-top: 10px;
+            background-color: white;
+        }
+
+        .form .column {
+            display: flex;
+            column-gap: 15px;
+        }
+
+        .radio-options {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .radio-options input[type="radio"] {
+            transform: scale(0.4);
+            margin-bottom: 5px;
+        }
+
+        .height-inputs {
+            display: flex;
+            align-items: center;
+            column-gap: 10px;
+        }
+
+        .height-inputs input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .height-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+       .weight-inputs {
+            display: flex;
+            flex-direction: column; /* Change to column layout on small screens */
+            align-items: flex-start; /* Align items to the start on small screens */
+            column-gap: 10px;
+        }
+
+        .weight-inputs select,
+        .weight-inputs input[type="number"] {
+            width: 100%; /* Make the inputs take full width on small screens */
+            margin-top: 10px; /* Add spacing between inputs on small screens */
+        }
+
+        @media (min-width: 768px) {
+            /* Apply the original layout for screens wider than 768px */
+            .weight-inputs {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .weight-inputs select,
+            .weight-inputs input[type="number"] {
+                width: auto;
+                margin-top: 0;
+            }
+        }
+        .input-box select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .next-button {
+            padding: 10px 20px;
+            width: 625px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            margin: 20px auto;
+             transition: .3s;
+        }
+
+        .next-button:hover {
+            background-color:#000;
+           
+             transform: scale(1.05,1);
+        }
+
+        @media (max-width: 768px) {
+            .next-button {
+                width: 80%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section class="container">
+        <header>FIT<span> X</span></header>
+          <form action="process_registration.php" name="myform" method="post" class="form">
+            <div class="input-box">
+                <label>Full Name</label>
+                <input type="text" placeholder="Enter Full Name" required>
+            </div>
+            <div class="input-box">
+                <label>Goal</label>
+                <select id="goal" name="goal" required>
+                    <option hidden>Select Goal</option>
+                    <option value="lose">Lose Weight</option>
+                    <option value="maintain">Maintain Weight</option>
+                    <option value="gain">Gain Weight</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <label>Reason</label>
+                <textarea placeholder="Enter your reason"></textarea>
+            </div>
+            <div class="input-box">
+                <label>Date of Birth</label>
+                <input type="date" placeholder="Enter Date of Birth" required>
+            </div>
+            <div class="input-box">
+                <label>Active Level</label>
+                <select required>
+                    <option hidden>Select Activity Level</option>
+                    <option value="no_active">No Active</option>
+                    <option value="lightly_active">Lightly Active</option>
+                    <option value="active">Active</option>
+                    <option value="highly_active">Highly Active</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <label>Gender</label>
+                <div class="radio-options">
+                    <input type="radio" id="male" name="gender" value="m">
+                    <label for="male">Male</label>
+
+                    <input type="radio" id="female" name="gender" value="f">
+                    <label for="female">Female</label>
+
+                    <input type="radio" id="other" name="gender" value="o">
+                    <label for="other">Other</label>
+                </div>
+            </div>
+          <!-- Add a new input box for displaying height in centimeters -->
+
+<div class="input-box">
+    <label>Height</label>
+    <div class="height-inputs">
+        <label for="feet" class="height-label">Feet</label>
+        <input type="number" id="feet" name="feet" placeholder="Feet" required>
+        <label for="inches" class="height-label">Inches</label>
+        <input type="number" id="inches" name="inches" placeholder="Inches" required>
+    </div>
+</div>
+<div class="input-box">
+    <label>Height (in cm)</label>
+    <input type="text" id="heightInCm" name="height" readonly>
+</div>
+
+            <!-- New weight unit selection -->
+            <div class="input-box">
+                <label>Weight</label>
+                <div class="weight-inputs">
+                    <label for="currentWeight" class="weight-label">Unit</label>
+                    <select id="weightUnit" name="weightUnit" required>
+                        <option value="kg">Kg</option>
+                        <option value="lbs">lbs</option>
+                    </select>
+                    <input type="number" id="currentWeight" name="currentWeight" placeholder="Current Weight" required>
+                    <label for="goalWeight" class="weight-label">Unit</label>
+                    <select id="goalWeightUnit" name="goalWeightUnit" required>
+                        <option value="kg">Kg</option>
+                        <option value="lbs">lbs</option>
+                    </select>
+                    <input type="number" id="goalWeight" name="goalWeight" placeholder="Goal Weight" required>
+                </div>
+            </div>
+
+            <div class="input-box">
+                <label>Weekly Goal</label>
+                <select id="weeklyGoal" name="weeklyGoal" required>
+                    <option hidden>Select Weekly Goal</option>
+                    <option value="lose">Gain 0.5 pounds per week(Recommended)</option>
+                    <option value="maintain">Gain 1 pound per week</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="input-box">
+                <button type="submit" class="next-button">Next</button>
+            </div>
+        </form>
+    </section>
+
+     <script>
+     
+       // Function to convert feet and inches to centimeters
+function feetInchesToCm(feet, inches) {
+    const cmPerFoot = 30.48;
+    const cmPerInch = 2.54;
+    const totalCm = feet * cmPerFoot + inches * cmPerInch;
+    return totalCm;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ... (existing code)
+
+    const feetInput = document.querySelector('#feet');
+    const inchesInput = document.querySelector('#inches');
+    const heightInCmInput = document.querySelector('#heightInCm');
+
+    // Event listener for feet and inches input change
+    feetInput.addEventListener('input', updateHeightInCm);
+    inchesInput.addEventListener('input', updateHeightInCm);
+
+    // Function to update the height in centimeters input box
+    function updateHeightInCm() {
+        const feet = parseFloat(feetInput.value) || 0;
+        const inches = parseFloat(inchesInput.value) || 0;
+        const heightInCm = feetInchesToCm(feet, inches);
+        heightInCmInput.value = heightInCm.toFixed(2) + ' cm';
+    }
+});
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const goalSelect = document.querySelector('#goal');
+            const weeklyGoalSelect = document.querySelector('#weeklyGoal');
+            const weightUnitSelect = document.querySelector('#weightUnit');
+            const goalWeightUnitSelect = document.querySelector('#goalWeightUnit');
+            const currentWeightInput = document.querySelector('#currentWeight');
+            const goalWeightInput = document.querySelector('#goalWeight');
+
+            goalSelect.addEventListener('change', function() {
+                const selectedGoal = goalSelect.value;
+
+               if (selectedGoal === 'lose') {
+                weeklyGoalSelect.innerHTML = `
+                    <option value="0.5">Lose 0.5 pound per week (Recommended)</option>
+                    <option value="1">Lose 1 pound per week</option>
+                `;
+            } else if (selectedGoal === 'maintain') {
+                weeklyGoalSelect.innerHTML = `
+                    <option value="0">Maintain current weight</option>
+                `;
+            } else if (selectedGoal === 'gain') {
+                weeklyGoalSelect.innerHTML = `
+                    <option value="0.5">Gain 0.5 pound per week (Recommended)</option>
+                    <option value="1">Gain 1 pound per week</option>
+                `;
+            }
+            });
+
+            weightUnitSelect.addEventListener('change', function() {
+                const weightUnit = weightUnitSelect.value;
+                currentWeightInput.placeholder = `Current Weight (${weightUnit})`;
+            });
+
+            goalWeightUnitSelect.addEventListener('change', function() {
+                const goalWeightUnit = goalWeightUnitSelect.value;
+                goalWeightInput.placeholder = `Goal Weight (${goalWeightUnit})`;
+            });
+
+            // Additional event listener for currentWeight input change
+            currentWeightInput.addEventListener('input', function() {
+                const currentWeightKg = parseFloat(currentWeightInput.value);
+                if (!isNaN(currentWeightKg)) {
+                    const currentWeightLbs = kgToLbs(currentWeightKg);
+                    console.log(`Current Weight in lbs: ${currentWeightLbs.toFixed(2)}`);
+                }
+            });
+
+            // Additional event listener for goalWeight input change
+            goalWeightInput.addEventListener('input', function() {
+                const goalWeightKg = parseFloat(goalWeightInput.value);
+                if (!isNaN(goalWeightKg)) {
+                    const goalWeightLbs = kgToLbs(goalWeightKg);
+                    console.log(`Goal Weight in lbs: ${goalWeightLbs.toFixed(2)}`);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

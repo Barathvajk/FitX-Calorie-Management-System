@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <title>Food Search</title>
+    <style>
+        body {
+          font-family: "Poppins", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        font-size: 15px;
+        }
+
+
+        .container {
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #foodDetails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  
+  /* Background & Border */
+  background-color: #f2f2f2; /* Light gray background */
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 5px; /* Rounded corners */
+  
+  /* Padding & Margin */
+  padding: 20px; /* Padding for content spacing */
+  margin: 10px auto; /* Margin for separation and centering */
+  
+  /* Shadow for depth */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
+  /* Responsiveness */
+  max-width: 800px; /* Set a maximum width */
+  
+  /* Optional: Fancy text effects */
+  /* text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);  */
+  /* font-weight: bold; */
+}
+
+
+        .food {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            max-width: 300px;
+        }
+
+        #progressContainer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        progress {
+            width: 300px;
+            height: 20px;
+            margin-bottom: 10px;
+            appearance: none;
+            border: none;
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        progress::-webkit-progress-bar {
+            background-color: #f3f3f3;
+            border-radius: 10px;
+        }
+
+        progress::-webkit-progress-value {
+            background: linear-gradient(to right, #4caf50, #4caf50);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        progress.exceeded::-webkit-progress-value {
+            background: linear-gradient(to right, #ff0000, #ff0000);
+        }
+
+        progress::-moz-progress-bar {
+            background-color: #4caf50;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        #remainingCalories {
+            font-size: 18px;
+        }
+
+        .popup {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        a:link,
+        a:visited {
+            background-color: rgb(0, 128, 0);
+            color: white;
+            border: 2px solid rgb(0, 128, 0);
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display:block;
+            margin-left: 580px;
+            margin-bottom: 95px;
+            width:130px;
+        }
+      
+
+   header {
+    text-align: center;
+    background-color:black;
+    padding: 20px 0;
+    margin-bottom: 20px;
+
+    }
+
+      header h1 {
+        color: #fff;
+        margin: 0;
+      }
+
+    nav {
+      background-color:black;
+      padding: 10px 0;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav li {
+      display: inline;
+      margin-right: 20px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #0f0;
+    }
+    .meal-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 30px; /* Added margin for separation between meal plans */
+        }
+        .meal-list {
+            margin-right: 10px;
+            border: 1px solid #ccc; /* Added border for each meal plan */
+            border-radius: 8px; /* Added border radius for rounded corners */
+            padding: 10px; /* Added padding for spacing inside the container */
+            background-color: #f9f9f9; /* Added background color for better readability */
+        }
+        .meal-item {
+            margin-bottom: 10px;
+        }
+        .meal-title {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .meal-vegetarian {
+            margin-right: 70px;
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <h1>FIT<span style="color:#0f0">X</span></h1>
+    </header><br><br>
+<div class="container">
+    <h1>Food Search</h1>
+    <form id="searchForm" action="/addFood" method="POST">
+        <input
+                type="text"
+                id="searchInput"
+                name="search"
+                placeholder="Search for a food"
+        />
+        <button type="submit">Search</button>
+    </form>
+    <div id="foodDetails"></div>
+    <div id="progressContainer">
+        <h2>Progress</h2>
+        <progress id="calorieProgress" value="0" max="100"></progress>
+        <p>Daily Calorie Goal: <span id="calorieGoal">2000</span> kcal</p>
+        <p id="remainingCalories"></p>
+        <br /><br />
+    </div>
+</div>
+
+<!-- Popup container -->
+<div class="popup" id="popupContainer">
+  <div class="popup-content">
+      <h2>Add Food Details</h2>
+      <br />
+      <label for="servingQuantity">Serving Quantity:</label><br />
+      <input type="number" id="servingQuantity" min="1" value="1" /><br /><br />
+      <!-- Span to display the total calorie value -->
+      <span id="calorieValue">Total Calories: 0</span><br /><br />
+      <label for="mealName">Meal Name:</label><br />
+      <select id="mealName">
+          <option value="breakfast">Breakfast</option>
+          <option value="lunch">Lunch</option>
+          <option value="dinner">Dinner</option>
+          <option value="snacks">Snacks</option>
+      </select><br /><br />
+      <button id="addpopupbtn">Add</button>
+      <button id="closePopupBtn">Close</button>
+  </div>
+</div>
+
+
+<br />
+<a href="/insight.html">Go to Food Insight</a>
+    <script>
+       function updateCalorieValue() {
+            const servingQuantity = parseFloat(document.getElementById("servingQuantity").value);
+            const caloriePerServing = parseFloat(document.getElementById("foodDetails").dataset.calories);
+            const totalCalories = servingQuantity * caloriePerServing;
+            document.getElementById("food.calories").textContent = `Total Calories: ${totalCalories}`;
+        }
+
+        // Add event listener to the serving quantity input field
+        document.getElementById("servingQuantity").addEventListener("input", updateCalorieValue);
+
+
+      function setCookie(name, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        const expires = "expires=" + date.toUTCString();
+        document.cookie = name + "=" + value + ";" + expires + ";path=/";
+      }
+
+      // Function to get the value of a cookie by its name
+      function getCookie(name) {
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const cookies = decodedCookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          let cookie = cookies[i];
+          while (cookie.charAt(0) == " ") {
+            cookie = cookie.substring(1);
+          }
+          if (cookie.indexOf(name + "=") == 0) {
+            return cookie.substring(name.length + 1, cookie.length);
+          }
+        }
+        return "";
+      }
+
+      document.getElementById("addpopupbtn").addEventListener("click", () => {
+        const servingQuantity = parseFloat(
+          document.getElementById("servingQuantity").value
+        );
+        const mealName = document.getElementById("mealName").value;
+        const calories =
+          parseFloat(document.querySelector(".addButton").dataset.calories) *
+          servingQuantity;
+        const protein =
+          parseFloat(document.querySelector(".addButton").dataset.protein) *
+          servingQuantity;
+        const fat =
+          parseFloat(document.querySelector(".addButton").dataset.fat) *
+          servingQuantity;
+        const carbs =
+          parseFloat(document.querySelector(".addButton").dataset.carbs) *
+          servingQuantity;
+        const foodName = document.querySelector(".addButton").dataset.foodname;
+        // Send data to server
+        fetch("/addFood", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            foodName: foodName,
+            calories: calories,
+            protein: protein,
+            fat: fat,
+            carbs: carbs,
+            mealName: mealName,
+            servingQuantity: servingQuantity,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Food successfully stored in the database.");
+            } else {
+              alert("Failed to store food in the database.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while processing your request.");
+          });
+
+        // Hide the pop-up container after adding food details
+        const popup = document.getElementById("popupContainer");
+        popup.style.display = "none";
+      });
+
+      // Load total calories from cookie if available
+      let totalCalories = parseFloat(getCookie("totalCalories")) || 0;
+      const dailyGoal = 2000; // Set the daily calorie goal
+
+      document
+        .getElementById("searchForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const searchValue = document.getElementById("searchInput").value;
+          if (searchValue.trim() === "") {
+            alert("Please enter a valid food name.");
+            return; // Stop further execution
+          }
+          const response = await fetch("/search", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ search: searchValue }),
+          });
+          const data = await response.json();
+          displayFoodDetails(data);
+        });
+
+      document
+        .getElementById("closePopupBtn")
+        .addEventListener("click", function () {
+          const popup = document.getElementById("popupContainer");
+          popup.style.display = "none";
+        });
+
+      function displayFoodDetails(foods) {
+        const foodDetailsDiv = document.getElementById("foodDetails");
+        foodDetailsDiv.innerHTML = "";
+        if (foods.length === 0) {
+          foodDetailsDiv.innerHTML = "No matching foods found.";
+        } else {
+          foods.forEach((food) => {
+            const foodDetails = `
+                    <div class="food">
+                        <h2>${food.foodname}</h2>
+                        <p>Calories: ${food.calories}</p>
+                        <p>Protein: ${food.protein}</p>
+                        <p>Fat: ${food.fat}</p>
+                        <p>Carbs: ${food.carbs}</p>
+                        <button class="addButton" data-calories="${food.calories}" data-protein="${food.protein}" data-fat="${food.fat}" data-carbs="${food.carbs}" data-foodname="${food.foodname}">Add</button>
+                    </div>
+                `;
+            foodDetailsDiv.innerHTML += foodDetails;
+          });
+        }
+
+        // Attach event listeners to "Add" buttons
+        const addButtonList = document.querySelectorAll(".addButton");
+        addButtonList.forEach((button) => {
+          button.addEventListener("click", function () {
+            const popup = document.getElementById("popupContainer");
+            popup.style.display = "flex";
+            const servingQuantity = parseFloat(
+              document.getElementById("servingQuantity").value
+            );
+            const mealName = document.getElementById("mealName").value;
+            const calories =
+              parseFloat(this.dataset.calories) * servingQuantity;
+            const protein = parseFloat(this.dataset.protein) * servingQuantity;
+            const fat = parseFloat(this.dataset.fat) * servingQuantity;
+            const carbs = parseFloat(this.dataset.carbs) * servingQuantity;
+            const foodName = this.dataset.foodname;
+
+            // Update the progress only after clicking the "Add" button in the pop-up
+            document
+              .getElementById("addpopupbtn")
+              .addEventListener("click", () => {
+                updateProgress(
+                  calories,
+                  protein,
+                  fat,
+                  carbs,
+                  mealName,
+                  foodName
+                );
+                popup.style.display = "none"; // Hide the pop-up container after adding food details
+              });
+          });
+        });
+      }
+
+      function updateProgress(
+        calories,
+        protein,
+        fat,
+        carbs,
+        mealName,
+        foodName
+      ) {
+        // Calculate the remaining calories before adding the new serving
+        const remainingCaloriesBefore = dailyGoal - totalCalories;
+
+        // Deduct the calories of previously added servings of the same food
+        const existingFoodItems = document.querySelectorAll(
+          `#${mealName}Table .food`
+        );
+        existingFoodItems.forEach((foodItem) => {
+          if (foodItem.querySelector("h3").textContent.includes(foodName)) {
+            const existingCalories = parseFloat(
+              foodItem
+                .querySelector("p:nth-child(2)")
+                .textContent.split(": ")[1]
+            );
+            totalCalories = -Calories;
+          }
+        });
+
+        // Calculate the total calories to add considering serving quantity
+        const totalCaloriesToAdd =
+          calories *
+          parseFloat(document.getElementById("servingQuantity").value);
+
+        // Add the total calories to the total
+        totalCalories += totalCaloriesToAdd;
+
+        // Store the updated total calories in local storage
+        localStorage.setItem("totalCalories", totalCalories);
+
+        // Calculate the remaining calories after adding the new serving
+        const remainingCaloriesAfter = dailyGoal - totalCalories;
+
+        // Update the width of the progress bar and the text
+        const progressBar = document.getElementById("calorieProgress");
+        const percentage = (totalCalories / dailyGoal) * 100;
+        const width = percentage > 100 ? 100 : percentage;
+        progressBar.value = width;
+
+        // Update remaining calories
+        const remainingCaloriesElement =
+          document.getElementById("remainingCalories");
+        remainingCaloriesElement.textContent =
+          remainingCaloriesAfter >= 0
+            ? `Remaining Calories: ${remainingCaloriesAfter.toFixed(2)} kcal`
+            : `Exceeded Goal by: ${Math.abs(remainingCaloriesAfter).toFixed(
+                2
+              )} kcal`;
+
+        // Change progress bar color if goal exceeded
+        if (totalCalories > dailyGoal) {
+          progressBar.classList.add("exceeded");
+        } else {
+          progressBar.classList.remove("exceeded");
+        }
+
+        // Add food details to the respective meal table
+        const mealTable = document.getElementById(`${mealName}Table`);
+        const existingFood = mealTable.querySelector(
+          `h3:contains('${mealName} - ${foodName}')`
+        );
+        if (!existingFood) {
+          const foodDetails = `
+          <div class="food">
+              <h3>${mealName} - ${foodName}</h3>
+              <p>Calories: ${totalCaloriesToAdd}</p>
+              <p>Protein: ${protein}</p>
+              <p>Fat: ${fat}</p>
+              <p>Carbs: ${carbs}</p>
+          </div>
+      `;
+          mealTable.innerHTML += foodDetails;
+        }
+      }
+    </script>
+  </body>
+</html>

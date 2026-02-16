@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Search</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      form {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      button {
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        opacity: 0.8;
+      }
+
+      #foodDetails {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .food {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 10px;
+        max-width: 300px;
+      }
+
+      #progressContainer {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      progress {
+        width: 300px;
+        height: 20px;
+        margin-bottom: 10px;
+        appearance: none;
+        border: none;
+        background-color: #f3f3f3;
+        border-radius: 10px;
+        overflow: hidden; /* to hide the excess progress */
+      }
+
+      progress::-webkit-progress-bar {
+        background-color: #f3f3f3;
+        border-radius: 10px;
+      }
+
+      progress::-webkit-progress-value {
+        background: linear-gradient(
+          to right,
+          #4caf50,
+          #4caf50
+        ); /* Green gradient */
+        border-radius: 10px;
+        transition: width 0.5s ease; /* Smooth transition */
+      }
+
+      progress.exceeded::-webkit-progress-value {
+        background: linear-gradient(
+          to right,
+          #ff0000,
+          #ff0000
+        ); /* Red gradient */
+      }
+
+      progress::-moz-progress-bar {
+        background-color: #4caf50;
+        border-radius: 10px;
+        transition: width 0.5s ease; /* Smooth transition */
+      }
+
+      #remainingCalories {
+        font-size: 18px;
+      }
+
+      #dailyGoalContainer {
+        text-align: center;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h1>Food Search</h1>
+      <form id="searchForm">
+        
+        <input
+          type="text"
+          id="searchInput"
+          name="search"
+          placeholder="Search for a food"
+        />
+        <button type="submit">Search</button>
+      </form>
+      <div id="foodDetails"></div>
+      <input
+          type="number"
+          id="calorieGoalInput"
+          name="calorieGoal"
+          placeholder="Enter Daily Calorie Goal"
+          required
+        />   
+      <div id="progressContainer">
+        <h2>Progress</h2>
+        <progress id="calorieProgress" value="0" max="100"></progress>
+        <p id="remainingCalories"></p>
+      </div>
+      <div id="dailyGoalContainer">
+        <p>Daily Calorie Goal: <span id="calorieGoalDisplay"></span> kcal</p>
+      </div>
+    </div>
+
+    <script>
+      let totalCalories = 0;
+      let dailyGoal;
+
+      document.getElementById("searchForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const searchValue = document.getElementById("searchInput").value;
+        const response = await fetch("/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            search: searchValue
+          }),
+        });
+        const data = await response.json();
+        displayFoodDetails(data);
+      });
+
+      document.getElementById("calorieGoalInput").addEventListener("change", function() {
+        dailyGoal = parseFloat(this.value);
+        document.getElementById("calorieGoalDisplay").textContent = dailyGoal.toFixed(2);
+      });
+
+      function displayFoodDetails(foods) {
+        const foodDetailsDiv = document.getElementById("foodDetails");
+        foodDetailsDiv.innerHTML = "";
+        if (foods.length === 0) {
+          foodDetailsDiv.innerHTML = "No matching foods found.";
+        } else {
+          foods.forEach((food) => {
+            const foodDetails = `
+        <div class="food">
+          <h2>${food.foodname}</h2>
+          <p>Calories: ${food.calories}</p>
+          <p>Protein: ${food.protein}</p>
+          <p>Fat: ${food.fat}</p>
+          <p>Carbs: ${food.carbs}</p>
+          <button class="addButton" data-calories="${food.calories}">Add</button>
+        </div>
+      `;
+            foodDetailsDiv.innerHTML += foodDetails;
+          });
+        }
+
+        // Attach event listeners to "Add" buttons
+        const addButtonList = document.querySelectorAll(".addButton");
+        addButtonList.forEach((button) => {
+          button.addEventListener("click", function() {
+            const calories = parseFloat(this.dataset.calories);
+            updateProgress(calories);
+          });
+        });
+      }
+
+      function updateProgress(calories) {
+        totalCalories += calories; // Add the calories to the total
+
+        // Calculate the percentage of calories consumed
+        const percentage = (totalCalories / dailyGoal) * 100;
+
+        // Limit the width of the progress bar to 100%
+        const width = percentage > 100 ? 100 : percentage;
+
+        // Update the width of the progress bar and the text
+        const progressBar = document.getElementById("calorieProgress");
+        progressBar.value = width;
+
+        // Update remaining calories
+        const remainingCalories = dailyGoal - totalCalories;
+        const remainingCaloriesElement = document.getElementById("remainingCalories");
+        remainingCaloriesElement.textContent = remainingCalories >= 0 ?
+          `Remaining Calories: ${remainingCalories.toFixed(2)} kcal` :
+          `Exceeded Goal by: ${Math.abs(remainingCalories).toFixed(2)} kcal`;
+
+        // Change progress bar color if goal exceeded
+        if (totalCalories > dailyGoal) {
+          progressBar.classList.add("exceeded");
+        } else {
+          progressBar.classList.remove("exceeded");
+        }
+      }
+    </script>
+  </body>
+</html>

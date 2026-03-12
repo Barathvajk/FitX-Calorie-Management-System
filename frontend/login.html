@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — FITX</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">FX</div>
+      <h1>FIT<span>X</span></h1>
+      <p>Your ultimate fitness & calorie companion</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input class="form-control" type="email" id="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-control" type="password" id="password" placeholder="Enter your password" required>
+      </div>
+      <div id="loginError" style="color:#f44336;font-size:13px;margin-bottom:10px;display:none;"></div>
+      <button class="btn btn-primary btn-full" type="submit" id="loginBtn">
+        <span>🔐</span> Login to FITX
+      </button>
+    </form>
+
+    <p class="auth-footer">Don't have an account? <a href="register.html">Create one free</a></p>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:5000/api';
+
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+  btn.disabled = true; btn.textContent = 'Logging in…';
+  err.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('fitx_token', data.token);
+      localStorage.setItem('fitx_user', JSON.stringify(data.user));
+      window.location.href = 'index.html';
+    } else {
+      err.textContent = data.message || 'Login failed.';
+      err.style.display = 'block';
+    }
+  } catch {
+    err.textContent = 'Cannot connect to server. Make sure backend is running.';
+    err.style.display = 'block';
+  }
+  btn.disabled = false; btn.innerHTML = '<span>🔐</span> Login to FITX';
+});
+</script>
+</body>
+</html>

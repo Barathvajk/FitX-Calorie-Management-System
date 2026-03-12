@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FITX — Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav class="navbar">
+  <a class="logo" href="#" onclick="showPage('home')">
+    <div class="logo-icon">FX</div>
+    <div class="logo-text">FIT<span>X</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('home')" data-page="home"><span class="nav-icon">⊞</span> Home</a>
+    <a href="#" onclick="showPage('nutrition')" data-page="nutrition"><span class="nav-icon">🥗</span> Nutrition</a>
+    <a href="#" onclick="showPage('train')" data-page="train"><span class="nav-icon">🏋️</span> Train</a>
+    <a href="#" onclick="showPage('tools')" data-page="tools"><span class="nav-icon">🔧</span> Tools</a>
+    <a href="#" onclick="showPage('plans')" data-page="plans"><span class="nav-icon">📋</span> Plans</a>
+    <a href="#" onclick="showPage('insight')" data-page="insight"><span class="nav-icon">📊</span> Insight</a>
+    <a href="#" onclick="showPage('profile')" data-page="profile"><span class="nav-icon">👤</span> Profile</a>
+    <a href="#" onclick="showPage('about')" data-page="about"><span class="nav-icon">ℹ️</span> About</a>
+  </div>
+  <div class="nav-user">
+    <div class="nav-avatar" id="navAvatar" onclick="showPage('profile')">A</div>
+    <span class="nav-name" id="navName">Alex</span>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- ═══════════ TOAST ═══════════ -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: HOME / DASHBOARD
+════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+<div class="container">
+
+  <!-- Hero Stats Row -->
+  <div class="grid-hero mb-20">
+    <!-- Calorie Ring -->
+    <div class="ring-card">
+      <p class="card-title">Daily Calories</p>
+      <div class="ring-wrap" style="margin:0 auto 16px;">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="68" fill="none" stroke="#e0e0e0" stroke-width="14"/>
+          <circle id="ringArc" cx="80" cy="80" r="68" fill="none" stroke="#4CAF50"
+            stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="427.3" stroke-dashoffset="427.3"
+            style="transition:stroke-dashoffset 0.8s ease"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-val" id="ringNet">0</div>
+          <div class="ring-lbl">NET KCAL</div>
+        </div>
+      </div>
+      <div style="width:100%;">
+        <div class="flex-between mb-12" style="font-size:12px;">
+          <span class="text-muted">Goal: <strong class="text-green" id="ringGoal">2000</strong> kcal</span>
+          <span id="ringRemain" class="fw-600 text-green">2000 left</span>
+        </div>
+        <div class="progress-bar-bg"><div id="ringBar" class="progress-bar-fill" style="width:0%"></div></div>
+      </div>
+      <div class="grid-3 mt-16" style="gap:8px;width:100%;">
+        <div style="text-align:center;background:#f7f9f7;border-radius:10px;padding:8px 4px;">
+          <div style="font-size:11px;">🍽️</div>
+          <div style="font-size:16px;font-weight:800;color:#4CAF50;" id="sumFood">0</div>
+          <div style="font-size:9px;color:#aaa;text-transform:uppercase;">Eaten</div>
+        </div>
+        <div style="text-align:center;background:#f7f9f7;border-radius:10px;padding:8px 4px;">
+          <div style="font-size:11px;">🔥</div>
+          <div style="font-size:16px;font-weight:800;color:#111;" id="sumBurn">0</div>
+          <div style="font-size:9px;color:#aaa;text-transform:uppercase;">Burned</div>
+        </div>
+        <div style="text-align:center;background:#f7f9f7;border-radius:10px;padding:8px 4px;">
+          <div style="font-size:11px;">⚖️</div>
+          <div style="font-size:16px;font-weight:800;color:#2196F3;" id="sumLeft">0</div>
+          <div style="font-size:9px;color:#aaa;text-transform:uppercase;">Left</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Macros -->
+    <div class="card">
+      <p class="card-title">Macronutrients</p>
+      <div class="macro-row">
+        <div class="macro-header"><span class="macro-label">🥩 Protein</span><span class="macro-value text-danger" id="macroP">0g</span></div>
+        <div class="macro-bar-bg"><div class="macro-bar-fill" id="barP" style="width:0%;background:#ef5350;"></div></div>
+        <div style="font-size:10px;color:#aaa;margin-top:2px;">Goal: <span id="goalP">150g</span></div>
+      </div>
+      <div class="macro-row">
+        <div class="macro-header"><span class="macro-label">🌾 Carbs</span><span class="macro-value" style="color:#f59e0b;" id="macroC">0g</span></div>
+        <div class="macro-bar-bg"><div class="macro-bar-fill" id="barC" style="width:0%;background:#f59e0b;"></div></div>
+        <div style="font-size:10px;color:#aaa;margin-top:2px;">Goal: <span id="goalC">225g</span></div>
+      </div>
+      <div class="macro-row">
+        <div class="macro-header"><span class="macro-label">🫒 Fat</span><span class="macro-value" style="color:#8b5cf6;" id="macroF">0g</span></div>
+        <div class="macro-bar-bg"><div class="macro-bar-fill" id="barF" style="width:0%;background:#8b5cf6;"></div></div>
+        <div style="font-size:10px;color:#aaa;margin-top:2px;">Goal: <span id="goalF">55g</span></div>
+      </div>
+      <div class="grid-2 mt-16" style="gap:8px;">
+        <div style="background:#f7f9f7;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Protein kcal</div><div style="font-size:18px;font-weight:800;color:#ef5350;" id="pCal">0</div></div>
+        <div style="background:#f7f9f7;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Carb kcal</div><div style="font-size:18px;font-weight:800;color:#f59e0b;" id="cCal">0</div></div>
+        <div style="background:#f7f9f7;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Fat kcal</div><div style="font-size:18px;font-weight:800;color:#8b5cf6;" id="fCal">0</div></div>
+        <div style="background:#e8f5e9;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Total</div><div style="font-size:18px;font-weight:800;color:#4CAF50;" id="totCal">0</div></div>
+      </div>
+    </div>
+
+    <!-- Activity Panel -->
+    <div class="card" style="display:flex;flex-direction:column;gap:12px;">
+      <p class="card-title">Activity</p>
+      <!-- Steps -->
+      <div style="background:#e3f2fd;border:1.5px solid #90caf9;border-radius:12px;padding:14px;">
+        <div class="flex-between mb-12">
+          <div><div style="font-size:9px;color:#1565c0;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Steps Today</div>
+          <div style="font-size:26px;font-weight:800;color:#1565c0;" id="stepsDisplay">0</div></div>
+          <span style="font-size:26px;">👟</span>
+        </div>
+        <div class="progress-bar-bg"><div id="stepsBar" class="progress-bar-fill" style="width:0%;background:#1565c0;"></div></div>
+        <div style="font-size:9px;color:#1565c0;margin-top:3px;"><span id="stepsPct">0</span>% of 10,000</div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <input type="number" id="stepsInput" placeholder="Enter steps" style="flex:1;padding:6px 10px;border:1px solid #90caf9;border-radius:6px;font-size:12px;outline:none;">
+          <button class="btn btn-sm" onclick="updateSteps()" style="background:#1565c0;color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;">Update</button>
+        </div>
+      </div>
+      <!-- Water -->
+      <div style="background:#e0f2f1;border:1.5px solid #80cbc4;border-radius:12px;padding:14px;">
+        <div class="flex-between mb-12">
+          <div><div style="font-size:9px;color:#00695c;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Water Intake</div>
+          <div style="font-size:18px;font-weight:800;color:#00695c;"><span id="waterDisplay">0</span>/8 <span style="font-size:11px;color:#aaa;">glasses</span></div></div>
+          <span style="font-size:22px;">💧</span>
+        </div>
+        <div class="water-glasses" id="waterGlasses"></div>
+      </div>
+      <!-- Workouts -->
+      <div style="background:#f3e5f5;border:1.5px solid #ce93d8;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:9px;color:#6a1b9a;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Workouts Today</div>
+        <div style="font-size:22px;font-weight:800;color:#6a1b9a;" id="wktCount">0</div></div>
+        <span style="font-size:22px;">💪</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Chart -->
+  <div class="card mb-20">
+    <div class="flex-between mb-12">
+      <p class="card-title" style="margin:0;">Weekly Overview</p>
+      <div class="chart-legend">
+        <span><span class="leg-dot" style="background:#4CAF50;"></span>Calories</span>
+        <span><span class="leg-dot" style="background:#222;"></span>Burned</span>
+      </div>
+    </div>
+    <div class="chart-wrap" id="weekChart"></div>
+  </div>
+
+  <!-- Today's Meals by slot -->
+  <div class="section-title">Today's Meals</div>
+  <div class="grid-3 mb-20" id="mealSlotCards"></div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: NUTRITION
+════════════════════════════════════════ -->
+<div id="page-nutrition" class="page">
+<div class="container">
+  <div class="section-title">Nutrition Tracker</div>
+
+  <!-- Sub Tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;">
+    <button class="btn btn-primary btn-sm" id="ntab-log" onclick="nutrTab('log')">🍽️ Log Food</button>
+    <button class="btn btn-black btn-sm" id="ntab-diary" onclick="nutrTab('diary')" style="background:#f7f9f7;color:#333;border:1.5px solid #e0e0e0;">📓 Food Diary</button>
+    <button class="btn btn-black btn-sm" id="ntab-cardio" onclick="nutrTab('cardio')" style="background:#f7f9f7;color:#333;border:1.5px solid #e0e0e0;">🏃 Cardio</button>
+  </div>
+
+  <!-- LOG FOOD -->
+  <div id="nutr-log">
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:18px;">
+      <!-- Panel -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card">
+          <p class="card-title">Select Meal</p>
+          <div class="meal-tabs" id="mealTypeTabs"></div>
+        </div>
+
+        <div class="card" id="selFoodCard" style="display:none;border:2px solid #4CAF50;background:#e8f5e9;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span style="font-size:28px;" id="sfEmoji">🍗</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:700;" id="sfName">—</div>
+              <div style="font-size:11px;color:#aaa;" id="sfPortion">—</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:22px;font-weight:800;color:#4CAF50;" id="sfCal">0</div>
+              <div style="font-size:9px;color:#aaa;">kcal</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;font-size:12px;margin-bottom:12px;">
+            <span style="color:#ef5350;font-weight:600;">P <span id="sfP">0</span>g</span>
+            <span style="color:#f59e0b;font-weight:600;">C <span id="sfC">0</span>g</span>
+            <span style="color:#8b5cf6;font-weight:600;">F <span id="sfF">0</span>g</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="changeQty(-0.5)" style="width:28px;height:28px;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:16px;">−</button>
+            <input type="number" id="qtyInput" value="1" min="0.1" step="0.5" style="width:50px;text-align:center;border:1.5px solid #4CAF50;border-radius:7px;padding:4px;font-size:14px;font-weight:700;outline:none;">
+            <button onclick="changeQty(0.5)" style="width:28px;height:28px;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:16px;">+</button>
+            <button class="btn btn-primary" style="flex:1;padding:7px 0;" onclick="addMealToLog()">Add to <span id="addMealLbl">Breakfast</span></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Summary</p>
+          <div class="grid-2" style="gap:8px;">
+            <div style="background:#f7f9f7;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Net Cal</div><div style="font-size:18px;font-weight:800;color:#4CAF50;" id="sNet">0</div></div>
+            <div style="background:#f7f9f7;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Protein</div><div style="font-size:18px;font-weight:800;color:#ef5350;" id="sP">0g</div></div>
+            <div style="background:#f7f9f7;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Carbs</div><div style="font-size:18px;font-weight:800;color:#f59e0b;" id="sC">0g</div></div>
+            <div style="background:#f7f9f7;border-radius:9px;padding:9px;"><div style="font-size:9px;color:#aaa;text-transform:uppercase;">Fat</div><div style="font-size:18px;font-weight:800;color:#8b5cf6;" id="sF">0g</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Food Database -->
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:16px 18px 12px;border-bottom:1px solid #e0e0e0;">
+          <p class="card-title" style="margin-bottom:10px;">Food Database</p>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input class="form-control" type="text" id="foodSearch" placeholder="Search foods (chicken, dal, oats…)" oninput="filterFoods()">
+          </div>
+        </div>
+        <div style="max-height:520px;overflow-y:auto;padding:10px 12px;" id="foodList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIARY -->
+  <div id="nutr-diary" style="display:none;">
+    <div class="grid-2" id="diaryGrid"></div>
+  </div>
+
+  <!-- CARDIO -->
+  <div id="nutr-cardio" style="display:none;">
+    <div class="card mb-16" style="padding:16px 20px;display:flex;align-items:center;gap:20px;">
+      <span style="font-size:20px;">⏱️</span>
+      <div>
+        <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;">Duration</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+          <input type="number" id="cardioMins" value="30" min="1" style="width:65px;border:1.5px solid #4CAF50;border-radius:7px;padding:6px 8px;font-size:15px;font-weight:700;text-align:center;outline:none;">
+          <span style="font-size:12px;color:#aaa;">minutes</span>
+        </div>
+      </div>
+      <div style="margin-left:auto;text-align:right;">
+        <div style="font-size:10px;color:#aaa;text-transform:uppercase;">Your Weight</div>
+        <div style="font-size:20px;font-weight:800;color:#4CAF50;" id="cardioWeight">70 kg</div>
+      </div>
+    </div>
+    <div class="grid-4 mb-20" id="cardioGrid" style="gap:12px;"></div>
+    <div id="cardioLogWrap" style="display:none;">
+      <div class="card">
+        <p class="card-title">Logged Today</p>
+        <div id="cardioLog"></div>
+        <div style="border-top:1px solid #e0e0e0;margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;font-weight:700;">
+          <span>Total Burned</span>
+          <span class="text-green" id="cardioTotal">0 kcal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: TRAIN
+════════════════════════════════════════ -->
+<div id="page-train" class="page">
+<div class="container">
+  <div id="trainLibrary">
+    <div class="flex-between mb-20">
+      <div class="section-title" style="margin:0;">Workout Library</div>
+      <div id="lastWktInfo" style="font-size:12px;color:#aaa;"></div>
+    </div>
+    <div class="grid-3" id="workoutGrid" style="gap:16px;"></div>
+  </div>
+
+  <!-- Active Workout -->
+  <div id="activeWorkoutView" style="display:none;">
+    <div class="active-wkt-header">
+      <div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.6);" id="awTag">—</div>
+        <div style="font-size:22px;font-weight:800;" id="awName">—</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">Elapsed</div>
+        <div class="wkt-timer" id="wktTimer">00:00</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-sm" id="wktPauseBtn" onclick="toggleWktTimer()" style="background:rgba(255,255,255,0.15);color:#fff;border:none;">⏸ Pause</button>
+        <button class="btn btn-primary btn-sm" onclick="finishWorkout()">✓ Finish Workout</button>
+      </div>
+    </div>
+    <div class="grid-2" id="exerciseCards" style="gap:14px;"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: TOOLS (BMI + Body Fat)
+════════════════════════════════════════ -->
+<div id="page-tools" class="page">
+<div class="container">
+  <div class="section-title">Health Tools</div>
+  <div class="grid-2" style="gap:20px;align-items:start;">
+    <!-- BMI -->
+    <div class="card">
+      <p class="card-title">⚖️ BMI Calculator</p>
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input class="form-control" type="number" id="bmiWeight" placeholder="70">
+      </div>
+      <div class="form-group">
+        <label>Height (cm)</label>
+        <input class="form-control" type="number" id="bmiHeight" placeholder="170">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="calcBMI()">Calculate BMI</button>
+      <div id="bmiResult" style="display:none;" class="bmi-result mt-16">
+        <div class="bmi-value" id="bmiVal">0</div>
+        <div class="bmi-category" id="bmiCat">—</div>
+        <div class="bmi-scale mt-12">
+          <div class="bmi-seg" style="background:#2196F3;"></div>
+          <div class="bmi-seg" style="background:#4CAF50;"></div>
+          <div class="bmi-seg" style="background:#ff9800;"></div>
+          <div class="bmi-seg" style="background:#f44336;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;margin-top:3px;">
+          <span>Under</span><span>Normal</span><span>Over</span><span>Obese</span>
+        </div>
+        <div id="bmiAdvice" style="font-size:12px;color:#555;margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- Body Fat -->
+    <div class="card">
+      <p class="card-title">🧬 Body Fat Calculator</p>
+      <div class="form-group">
+        <label>Gender</label>
+        <select class="form-control" id="bfGender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input class="form-control" type="number" id="bfAge" placeholder="25">
+      </div>
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input class="form-control" type="number" id="bfWeight" placeholder="70">
+      </div>
+      <div class="form-group">
+        <label>Waist Circumference (cm)</label>
+        <input class="form-control" type="number" id="bfWaist" placeholder="80">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="calcBodyFat()">Calculate Body Fat %</button>
+      <div id="bfResult" style="display:none;" class="bmi-result mt-16">
+        <div class="bmi-value" id="bfVal">0%</div>
+        <div class="bmi-category" id="bfCat">—</div>
+        <div id="bfAdvice" style="font-size:12px;color:#555;margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <!-- TDEE Calculator -->
+    <div class="card">
+      <p class="card-title">⚡ TDEE Calculator</p>
+      <div class="grid-2" style="gap:10px;">
+        <div class="form-group" style="margin-bottom:10px;"><label>Weight (kg)</label><input class="form-control" type="number" id="tdeeW" placeholder="70"></div>
+        <div class="form-group" style="margin-bottom:10px;"><label>Height (cm)</label><input class="form-control" type="number" id="tdeeH" placeholder="170"></div>
+        <div class="form-group" style="margin-bottom:10px;"><label>Age</label><input class="form-control" type="number" id="tdeeAge" placeholder="25"></div>
+        <div class="form-group" style="margin-bottom:10px;"><label>Gender</label>
+          <select class="form-control" id="tdeeG"><option value="male">Male</option><option value="female">Female</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Activity Level</label>
+        <select class="form-control" id="tdeeA">
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Lightly Active</option>
+          <option value="1.55" selected>Moderately Active</option>
+          <option value="1.725">Very Active</option>
+          <option value="1.9">Athlete</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="calcTDEE()">Calculate TDEE</button>
+      <div id="tdeeResult" style="display:none;margin-top:14px;">
+        <div class="grid-2" style="gap:8px;" id="tdeeCards"></div>
+      </div>
+    </div>
+
+    <!-- Macro Calculator -->
+    <div class="card">
+      <p class="card-title">🥗 Macro Calculator</p>
+      <div class="form-group">
+        <label>Daily Calorie Goal</label>
+        <input class="form-control" type="number" id="macroCal" placeholder="2000">
+      </div>
+      <div class="form-group">
+        <label>Goal</label>
+        <select class="form-control" id="macroGoal">
+          <option value="balanced">Balanced (30P/45C/25F)</option>
+          <option value="lowcarb">Low Carb (40P/20C/40F)</option>
+          <option value="highcarb">High Carb (25P/55C/20F)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="calcMacros()">Calculate Macros</button>
+      <div id="macroResult" style="display:none;margin-top:14px;">
+        <div class="grid-3" style="gap:8px;" id="macroCards"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: PLANS
+════════════════════════════════════════ -->
+<div id="page-plans" class="page">
+<div class="container">
+  <div class="section-title">Meal Plans</div>
+  <div class="grid-3 mb-20" id="mealPlansGrid" style="gap:18px;"></div>
+  <div class="section-title">Workout History</div>
+  <div id="wktHistoryList"><div style="color:#aaa;font-size:13px;">No workouts logged yet.</div></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: INSIGHT
+════════════════════════════════════════ -->
+<div id="page-insight" class="page">
+<div class="container">
+  <div class="section-title">Insights & Analytics</div>
+  <div class="grid-4 mb-20" id="insightStats"></div>
+  <div class="card mb-20">
+    <p class="card-title">30-Day Calorie Trend</p>
+    <div style="overflow-x:auto;"><div style="display:flex;gap:4px;align-items:flex-end;height:120px;min-width:600px;" id="insightChart"></div></div>
+  </div>
+  <div class="grid-2" style="gap:16px;">
+    <div class="card">
+      <p class="card-title">Top Foods This Week</p>
+      <div id="topFoods"><div style="color:#aaa;font-size:13px;">No data yet.</div></div>
+    </div>
+    <div class="card">
+      <p class="card-title">Weekly Streak</p>
+      <div id="streakGrid" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: PROFILE
+════════════════════════════════════════ -->
+<div id="page-profile" class="page">
+<div class="container">
+  <div style="display:grid;grid-template-columns:340px 1fr;gap:20px;">
+    <!-- Left -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card" style="text-align:center;padding:28px;">
+        <div class="profile-avatar" id="profAvatar">A</div>
+        <div style="font-size:20px;font-weight:800;" id="profName">Alex</div>
+        <div style="font-size:12px;color:#aaa;margin-top:3px;" id="profGoalLabel">Maintaining</div>
+        <div class="grid-3 mt-16" style="gap:8px;">
+          <div style="background:#f7f9f7;border-radius:9px;padding:9px;text-align:center;">
+            <div style="font-size:16px;font-weight:800;" id="profWeight">—</div>
+            <div style="font-size:9px;color:#aaa;">kg</div>
+          </div>
+          <div style="background:#f7f9f7;border-radius:9px;padding:9px;text-align:center;">
+            <div style="font-size:16px;font-weight:800;" id="profHeight">—</div>
+            <div style="font-size:9px;color:#aaa;">cm</div>
+          </div>
+          <div style="background:#f7f9f7;border-radius:9px;padding:9px;text-align:center;">
+            <div style="font-size:16px;font-weight:800;" id="profAge">—</div>
+            <div style="font-size:9px;color:#aaa;">yrs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calorie Targets -->
+      <div class="card">
+        <p class="card-title">Calorie Targets</p>
+        <div id="calTargets"></div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card">
+        <p class="card-title">Edit Profile</p>
+        <div class="grid-2" style="gap:12px;">
+          <div class="form-group" style="margin-bottom:0;"><label>Name</label><input class="form-control" id="editName" type="text"></div>
+          <div class="form-group" style="margin-bottom:0;"><label>Weight (kg)</label><input class="form-control" id="editWeight" type="number"></div>
+          <div class="form-group" style="margin-bottom:0;"><label>Height (cm)</label><input class="form-control" id="editHeight" type="number"></div>
+          <div class="form-group" style="margin-bottom:0;"><label>Age</label><input class="form-control" id="editAge" type="number"></div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Goal</label>
+            <select class="form-control" id="editGoal">
+              <option value="lose">Lose Weight</option>
+              <option value="maintain">Maintain</option>
+              <option value="gain">Gain Muscle</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Activity</label>
+            <select class="form-control" id="editActivity">
+              <option value="1.2">Sedentary</option>
+              <option value="1.375">Light</option>
+              <option value="1.55">Moderate</option>
+              <option value="1.725">Active</option>
+              <option value="1.9">Athlete</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary mt-16" onclick="saveProfile()">💾 Save Changes</button>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Achievements</p>
+        <div class="achievement-grid" id="achievementGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  PAGE: ABOUT
+════════════════════════════════════════ -->
+<div id="page-about" class="page">
+<div class="container">
+  <div class="about-hero">
+    <h1>FIT<span>X</span></h1>
+    <p>Your all-in-one fitness & calorie management platform.</p>
+  </div>
+  <div class="grid-3 mb-20" style="gap:16px;">
+    <div class="card" style="text-align:center;">
+      <div class="feature-icon">🥗</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Calorie Tracking</div>
+      <div style="font-size:12px;color:#aaa;">Log meals, track macros, and hit your daily nutrition goals with our 28+ item food database.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="feature-icon">🏋️</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Workout Plans</div>
+      <div style="font-size:12px;color:#aaa;">6 professionally curated plans. Log workouts with real-time set tracking, timer, and history.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="feature-icon">📊</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Smart Insights</div>
+      <div style="font-size:12px;color:#aaa;">Weekly charts, 30-day trends, calorie analysis, and progress streak tracking.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="feature-icon">⚖️</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Health Tools</div>
+      <div style="font-size:12px;color:#aaa;">BMI, Body Fat %, TDEE, and Macro calculators built right in.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="feature-icon">🔐</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Secure & Private</div>
+      <div style="font-size:12px;color:#aaa;">JWT authentication, bcrypt password hashing. Your data is always protected.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="feature-icon">🗄️</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">MySQL Backend</div>
+      <div style="font-size:12px;color:#aaa;">Robust relational database with users, meals, workouts, cardio, water & steps.</div>
+    </div>
+  </div>
+  <div class="card" style="text-align:center;padding:28px;">
+    <div style="font-size:22px;margin-bottom:10px;">📬 Contact Us</div>
+    <div style="font-size:14px;color:#555;">FITX2026@gmail.com &nbsp;|&nbsp; +123-456-7890</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ SCRIPT ═══════════ -->
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────
+const API = 'http://localhost:5000/api';
+
+// ─── STATE ─────────────────────────────────────────────────────
+let state = {
+  user: null, token: null,
+  dashboard: null,
+  foods: [], filteredFoods: [],
+  selFood: null, selMeal: 'Breakfast', qty: 1,
+  cardioLogs: [],
+  activeWorkout: null, wktTimerSec: 0, wktTimerInterval: null, wktPaused: false,
+  doneSets: {}, // key: "exIdx-setIdx"
+  water: 0,
+};
+
+const MEALS_LIST = ['Breakfast','Lunch','Dinner','Snacks','Pre-Workout','Post-Workout'];
+const EMOJI_MAP = {
+  'Chicken Breast':'🍗','Brown Rice':'🍚','Whole Egg':'🥚','Banana':'🍌','Rolled Oats':'🥣',
+  'Salmon Fillet':'🐟','Avocado':'🥑','Greek Yogurt':'🍶','Sweet Potato':'🍠','Almonds':'🌰',
+  'Broccoli':'🥦','Paneer':'🧀','Dal (Lentils)':'🫘','Chapati/Roti':'🫓','Whey Protein':'💪',
+  'Peanut Butter':'🥜','Spinach':'🥬','White Rice':'🍚','Apple':'🍎','Tuna (canned)':'🐠',
+  'Idli':'🫓','Protein Bar':'🍫','Curd/Dahi':'🥛','Mango':'🥭','Masoor Dal':'🫘','Pasta':'🍝',
+  'Olive Oil':'🫒','Cottage Cheese':'🥛'
+};
+const foodEmoji = n => EMOJI_MAP[n] || '🍽️';
+
+const CARDIO_DATA = [
+  {name:'Running',icon:'🏃',met:9.8},{name:'Cycling',icon:'🚴',met:7.5},
+  {name:'Swimming',icon:'🏊',met:8.0},{name:'HIIT',icon:'⚡',met:12.0},
+  {name:'Walking',icon:'🚶',met:3.8},{name:'Jump Rope',icon:'🪢',met:11.0},
+  {name:'Elliptical',icon:'🔄',met:6.0},{name:'Yoga',icon:'🧘',met:3.0},
+  {name:'Zumba',icon:'💃',met:7.0},{name:'Boxing',icon:'🥊',met:10.0},
+];
+
+const WORKOUTS = [
+  { id:1, name:'Push Day', tag:'Chest · Shoulders · Triceps', level:'Intermediate', dur:'45–55 min', cal:320, color:'#f97316', icon:'💪',
+    exs:[{name:'Bench Press',sets:4,reps:'8–10',muscle:'Chest'},{name:'Overhead Press',sets:3,reps:'8–10',muscle:'Shoulders'},{name:'Incline DB Press',sets:3,reps:'10–12',muscle:'Chest'},{name:'Lateral Raises',sets:3,reps:'12–15',muscle:'Shoulders'},{name:'Tricep Dips',sets:3,reps:'10–12',muscle:'Triceps'},{name:'Cable Pushdown',sets:3,reps:'12–15',muscle:'Triceps'}]},
+  { id:2, name:'Pull Day', tag:'Back · Biceps · Rear Delts', level:'Intermediate', dur:'45–55 min', cal:300, color:'#3b82f6', icon:'🔙',
+    exs:[{name:'Deadlift',sets:4,reps:'5–6',muscle:'Back'},{name:'Pull-Ups',sets:3,reps:'6–10',muscle:'Back'},{name:'Seated Row',sets:3,reps:'10–12',muscle:'Back'},{name:'Face Pulls',sets:3,reps:'15–20',muscle:'Rear Delts'},{name:'Barbell Curl',sets:3,reps:'10–12',muscle:'Biceps'},{name:'Hammer Curl',sets:3,reps:'12–15',muscle:'Biceps'}]},
+  { id:3, name:'Leg Day', tag:'Quads · Hamstrings · Glutes', level:'Advanced', dur:'55–65 min', cal:420, color:'#8b5cf6', icon:'🦵',
+    exs:[{name:'Back Squat',sets:4,reps:'6–8',muscle:'Quads'},{name:'Romanian DL',sets:3,reps:'8–10',muscle:'Hamstrings'},{name:'Leg Press',sets:3,reps:'10–12',muscle:'Quads'},{name:'Walking Lunges',sets:3,reps:'12/leg',muscle:'Glutes'},{name:'Leg Curl',sets:3,reps:'12–15',muscle:'Hamstrings'},{name:'Calf Raises',sets:4,reps:'15–20',muscle:'Calves'}]},
+  { id:4, name:'Full Body HIIT', tag:'Total Body Burn', level:'All Levels', dur:'30 min', cal:480, color:'#ef4444', icon:'🔥',
+    exs:[{name:'Burpees',sets:4,reps:'45s/15s off',muscle:'Full Body'},{name:'Mountain Climbers',sets:4,reps:'45s/15s off',muscle:'Core'},{name:'Jump Squats',sets:4,reps:'45s/15s off',muscle:'Legs'},{name:'Push-Ups',sets:4,reps:'45s/15s off',muscle:'Chest'},{name:'High Knees',sets:4,reps:'45s/15s off',muscle:'Cardio'}]},
+  { id:5, name:'Core & Abs', tag:'Core · Stability · Strength', level:'Beginner', dur:'25–30 min', cal:180, color:'#10b981', icon:'🎯',
+    exs:[{name:'Plank',sets:3,reps:'60s hold',muscle:'Core'},{name:'Crunches',sets:3,reps:'20',muscle:'Abs'},{name:'Leg Raises',sets:3,reps:'15',muscle:'Lower Abs'},{name:'Russian Twists',sets:3,reps:'20',muscle:'Obliques'},{name:'Dead Bug',sets:3,reps:'10/side',muscle:'Core'}]},
+  { id:6, name:'Yoga Flow', tag:'Flexibility · Mindfulness', level:'All Levels', dur:'40 min', cal:160, color:'#ec4899', icon:'🧘',
+    exs:[{name:'Sun Salutation',sets:3,reps:'5 rounds',muscle:'Full Body'},{name:'Warrior Sequence',sets:2,reps:'45s hold',muscle:'Hips'},{name:'Pigeon Pose',sets:2,reps:'60s/side',muscle:'Hips'},{name:'Spinal Twist',sets:2,reps:'45s/side',muscle:'Spine'},{name:'Child Pose',sets:3,reps:'60s',muscle:'Back'}]},
+];
+
+const MEAL_PLANS = [
+  { name:'High Protein Cut', goal:'Fat Loss', cal:1800, color:'#ef4444',
+    meals:[{t:'7:30 AM',m:'Breakfast',i:'Egg whites (4) + Oats + Black coffee'},{t:'10:30 AM',m:'Mid-Morning',i:'Greek yogurt + Almonds'},{t:'1:00 PM',m:'Lunch',i:'Chicken breast + Brown rice + Salad'},{t:'4:00 PM',m:'Pre-Workout',i:'Banana + Whey protein'},{t:'7:30 PM',m:'Dinner',i:'Salmon + Sweet potato + Broccoli'}]},
+  { name:'Veg Muscle Build', goal:'Muscle Gain', cal:2400, color:'#4CAF50',
+    meals:[{t:'7:00 AM',m:'Breakfast',i:'Paneer bhurji + 2 Rotis + Milk'},{t:'10:00 AM',m:'Mid-Morning',i:'Curd + Banana + Peanut butter'},{t:'1:00 PM',m:'Lunch',i:'Dal + Brown rice + Sabzi + Curd'},{t:'4:30 PM',m:'Pre-Workout',i:'Whey protein + Oats'},{t:'8:00 PM',m:'Dinner',i:'Paneer tikka + Chapati + Dal'}]},
+  { name:'Balanced Maintain', goal:'Maintenance', cal:2100, color:'#3b82f6',
+    meals:[{t:'8:00 AM',m:'Breakfast',i:'Idli (4) + Sambar + Chutney'},{t:'11:00 AM',m:'Mid-Morning',i:'Mixed fruits + Nuts'},{t:'1:30 PM',m:'Lunch',i:'Rice + Dal + 2 Sabzis + Curd'},{t:'4:30 PM',m:'Snack',i:'Protein bar or Roasted chana'},{t:'7:30 PM',m:'Dinner',i:'Wheat roti + Dal + Salad'}]},
+];
+
+// ─── AUTH ──────────────────────────────────────────────────────
+function checkAuth() {
+  const token = localStorage.getItem('fitx_token');
+  const user  = localStorage.getItem('fitx_user');
+  if (!token) { window.location.href = 'login.html'; return; }
+  state.token = token;
+  state.user  = JSON.parse(user);
+  initUI();
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = 'login.html';
+}
+
+// ─── TOAST ─────────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const el = document.getElementById('toast');
+  el.textContent = (type==='success'?'✅ ':'❌ ') + msg;
+  el.className = 'show' + (type==='error' ? ' error' : '');
+  setTimeout(() => el.className = '', 3000);
+}
+
+// ─── PAGE NAVIGATION ───────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const el = document.querySelector(`[data-page="${id}"]`);
+  if (el) el.classList.add('active');
+
+  if (id === 'home') loadDashboard();
+  if (id === 'nutrition') { buildMealTypeTabs(); buildFoodList(); buildDiary(); buildCardioGrid(); }
+  if (id === 'plans') { buildMealPlans(); loadWktHistory(); }
+  if (id === 'insight') loadInsights();
+  if (id === 'profile') buildProfile();
+}
+
+// ─── INIT ──────────────────────────────────────────────────────
+async function initUI() {
+  const u = state.user;
+  document.getElementById('navName').textContent = u.name;
+  document.getElementById('navAvatar').textContent = u.name[0].toUpperCase();
+  await loadFoods();
+  buildWorkoutGrid();
+  buildWaterGlasses();
+  loadDashboard();
+}
+
+// ─── API HELPER ────────────────────────────────────────────────
+async function api(path, opts={}) {
+  const res = await fetch(API + path, {
+    ...opts,
+    headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${state.token}`, ...(opts.headers||{}) }
+  });
+  return { ok: res.ok, status: res.status, data: await res.json() };
+}
+
+// ─── DASHBOARD ─────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const { data } = await api('/dashboard');
+    state.dashboard = data;
+    updateHomeUI(data);
+  } catch (e) {
+    // Offline demo fallback
+    updateHomeUI({ summary:{totalCalories:0,burnedCalories:0,netCalories:0,remaining:state.user?.calorie_goal||2000,goalCalories:state.user?.calorie_goal||2000}, macros:{protein:0,carbs:0,fats:0}, macroGoals:{protein:150,carbs:225,fats:55}, meals:[], workouts:[], water:0, steps:0, weeklyData:[] });
+  }
+}
+
+function updateHomeUI(d) {
+  const { summary: s, macros: m, macroGoals: mg, water, steps, weeklyData, workouts, meals } = d;
+
+  // Ring
+  const pct = Math.min(Math.round(s.netCalories / s.goalCalories * 100), 100);
+  const circ = 2 * Math.PI * 68;
+  document.getElementById('ringArc').style.strokeDashoffset = circ * (1 - pct/100);
+  document.getElementById('ringArc').style.stroke = s.netCalories > s.goalCalories ? '#f44336' : '#4CAF50';
+  document.getElementById('ringNet').textContent = Math.round(s.netCalories);
+  document.getElementById('ringGoal').textContent = s.goalCalories;
+  document.getElementById('ringRemain').textContent = s.remaining >= 0 ? `${s.remaining} left` : `+${Math.abs(s.remaining)} over`;
+  document.getElementById('ringRemain').style.color = s.remaining < 0 ? '#f44336' : '#4CAF50';
+  document.getElementById('ringBar').style.width = pct + '%';
+  document.getElementById('ringBar').style.background = s.netCalories > s.goalCalories ? '#f44336' : '#4CAF50';
+
+  document.getElementById('sumFood').textContent = Math.round(s.totalCalories);
+  document.getElementById('sumBurn').textContent = Math.round(s.burnedCalories);
+  document.getElementById('sumLeft').textContent = Math.abs(s.remaining);
+
+  // Macros
+  const mp = mg.protein||150, mc = mg.carbs||225, mf = mg.fats||55;
+  document.getElementById('macroP').textContent = Math.round(m.protein) + 'g';
+  document.getElementById('macroC').textContent = Math.round(m.carbs) + 'g';
+  document.getElementById('macroF').textContent = Math.round(m.fats) + 'g';
+  document.getElementById('barP').style.width = Math.min(m.protein/mp*100,100)+'%';
+  document.getElementById('barC').style.width = Math.min(m.carbs/mc*100,100)+'%';
+  document.getElementById('barF').style.width = Math.min(m.fats/mf*100,100)+'%';
+  document.getElementById('goalP').textContent = mp+'g';
+  document.getElementById('goalC').textContent = mc+'g';
+  document.getElementById('goalF').textContent = mf+'g';
+  document.getElementById('pCal').textContent = Math.round(m.protein*4);
+  document.getElementById('cCal').textContent = Math.round(m.carbs*4);
+  document.getElementById('fCal').textContent = Math.round(m.fats*9);
+  document.getElementById('totCal').textContent = Math.round(s.totalCalories);
+
+  // Water
+  state.water = water;
+  updateWaterUI(water);
+
+  // Steps
+  document.getElementById('stepsDisplay').textContent = (steps||0).toLocaleString();
+  const sp = Math.min(Math.round((steps||0)/10000*100),100);
+  document.getElementById('stepsBar').style.width = sp+'%';
+  document.getElementById('stepsPct').textContent = sp;
+
+  // Workouts
+  document.getElementById('wktCount').textContent = workouts?.length || 0;
+
+  // Weekly chart
+  buildWeekChart(weeklyData || []);
+
+  // Meal slot cards
+  buildMealSlotCards(meals || []);
+}
+
+// Weekly chart
+function buildWeekChart(data) {
+  const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const maxV = Math.max(2500, ...data.map(d=>Number(d.total_calories||0)));
+  const el = document.getElementById('weekChart');
+  if (!el) return;
+  el.innerHTML = DAYS.map((day, i) => {
+    const row = data[i] || {};
+    const cal = Number(row.cal || row.total_calories || (1800 + i*60));
+    const burn = Number(row.burn || 0);
+    const calH = Math.round((cal/maxV)*80);
+    const burnH = Math.round((burn/maxV)*80);
+    return `<div class="chart-col">
+      <div class="chart-bars">
+        <div class="chart-bar cal" style="height:${calH}px;" title="${cal} kcal"></div>
+        <div class="chart-bar burn" style="height:${burnH}px;" title="${burn} burned"></div>
+      </div>
+      <div class="chart-day">${day}</div>
+    </div>`;
+  }).join('');
+}
+
+function buildMealSlotCards(meals) {
+  const el = document.getElementById('mealSlotCards');
+  if (!el) return;
+  el.innerHTML = MEALS_LIST.map(slot => {
+    const items = meals.filter(m => m.meal_type === slot);
+    const kcal = items.reduce((s,m)=>s+Number(m.calories),0);
+    return `<div class="card" style="cursor:pointer;border:1.5px solid transparent;transition:all 0.2s;" onclick="showPage('nutrition');nutrTab('log');setSelMeal('${slot}')" onmouseenter="this.style.borderColor='#4CAF50'" onmouseleave="this.style.borderColor='transparent'">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-weight:700;font-size:13px;">${slot}</span>
+        <span style="font-weight:700;color:#4CAF50;font-size:12px;">${Math.round(kcal)} kcal</span>
+      </div>
+      ${items.length===0
+        ? '<div style="font-size:11px;color:#aaa;font-style:italic;">+ Tap to add food</div>'
+        : items.slice(0,2).map(m=>`<div style="display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:2px;"><span>${foodEmoji(m.meal_name)} ${m.meal_name}</span><span>${Math.round(m.calories)}</span></div>`).join('')
+      }
+      ${items.length>2?`<div style="font-size:10px;color:#aaa;">+${items.length-2} more</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ─── FOODS ─────────────────────────────────────────────────────
+async function loadFoods() {
+  try {
+    const { data } = await api('/foods');
+    state.foods = data; state.filteredFoods = data;
+  } catch {
+    // fallback inline data
+    state.foods = [
+      {id:1,name:'Chicken Breast',portion:'100g',calories:165,protein:31,carbs:0,fats:3.6,category:'Protein'},
+      {id:2,name:'Brown Rice',portion:'100g cooked',calories:216,protein:5,carbs:45,fats:1.8,category:'Grains'},
+      {id:3,name:'Whole Egg',portion:'1 large',calories:78,protein:6,carbs:0.6,fats:5,category:'Protein'},
+      {id:4,name:'Banana',portion:'1 medium',calories:105,protein:1.3,carbs:27,fats:0.4,category:'Fruit'},
+      {id:5,name:'Rolled Oats',portion:'100g dry',calories:389,protein:17,carbs:66,fats:7,category:'Grains'},
+      {id:6,name:'Salmon Fillet',portion:'100g',calories:208,protein:20,carbs:0,fats:13,category:'Protein'},
+      {id:7,name:'Avocado',portion:'100g',calories:160,protein:2,carbs:9,fats:15,category:'Healthy Fat'},
+      {id:8,name:'Greek Yogurt',portion:'150g',calories:89,protein:15,carbs:5.4,fats:0.6,category:'Dairy'},
+      {id:9,name:'Sweet Potato',portion:'100g',calories:86,protein:1.6,carbs:20,fats:0.1,category:'Veggies'},
+      {id:10,name:'Almonds',portion:'30g',calories:174,protein:6,carbs:6,fats:15,category:'Nuts'},
+      {id:11,name:'Broccoli',portion:'100g',calories:34,protein:2.8,carbs:7,fats:0.4,category:'Veggies'},
+      {id:12,name:'Paneer',portion:'100g',calories:265,protein:18,carbs:3.4,fats:20,category:'Dairy'},
+      {id:13,name:'Dal (Lentils)',portion:'100g cooked',calories:116,protein:9,carbs:20,fats:0.4,category:'Legumes'},
+      {id:14,name:'Chapati/Roti',portion:'1 piece',calories:120,protein:3.1,carbs:18,fats:3.7,category:'Grains'},
+      {id:15,name:'Whey Protein',portion:'30g scoop',calories:120,protein:24,carbs:3,fats:2,category:'Supplement'},
+      {id:16,name:'Peanut Butter',portion:'2 tbsp',calories:188,protein:8,carbs:6,fats:16,category:'Nuts'},
+      {id:17,name:'Spinach',portion:'100g',calories:23,protein:2.9,carbs:3.6,fats:0.4,category:'Veggies'},
+      {id:18,name:'White Rice',portion:'100g cooked',calories:130,protein:2.7,carbs:28,fats:0.3,category:'Grains'},
+      {id:19,name:'Apple',portion:'1 medium',calories:95,protein:0.5,carbs:25,fats:0.3,category:'Fruit'},
+      {id:20,name:'Tuna (canned)',portion:'100g',calories:116,protein:26,carbs:0,fats:1,category:'Protein'},
+      {id:21,name:'Idli',portion:'2 pieces',calories:140,protein:4.4,carbs:28,fats:0.6,category:'Grains'},
+      {id:22,name:'Protein Bar',portion:'1 bar',calories:220,protein:20,carbs:24,fats:7,category:'Supplement'},
+      {id:23,name:'Curd/Dahi',portion:'100g',calories:61,protein:3.5,carbs:4.7,fats:3.3,category:'Dairy'},
+      {id:24,name:'Mango',portion:'100g',calories:60,protein:0.8,carbs:15,fats:0.4,category:'Fruit'},
+    ];
+    state.filteredFoods = state.foods;
+  }
+  buildFoodList();
+}
+
+function filterFoods() {
+  const q = document.getElementById('foodSearch').value.toLowerCase();
+  state.filteredFoods = state.foods.filter(f => f.name.toLowerCase().includes(q));
+  buildFoodList();
+}
+
+const CAT_CLR = { Protein:'#ef5350', Grains:'#f59e0b', Fruit:'#10b981', 'Healthy Fat':'#8b5cf6', Dairy:'#3b82f6', Veggies:'#22c55e', Nuts:'#d97706', Legumes:'#f97316', Supplement:'#06b6d4' };
+
+function buildFoodList() {
+  const el = document.getElementById('foodList'); if(!el) return;
+  el.innerHTML = state.filteredFoods.map(f => `
+    <div class="food-item ${state.selFood?.id===f.id?'selected':''}" onclick="selectFood(${f.id})">
+      <span class="food-emoji">${foodEmoji(f.name)}</span>
+      <div class="food-info">
+        <div class="food-name">${f.name}</div>
+        <div class="food-meta">${f.portion} &nbsp;·&nbsp; <span style="color:#ef5350">P${f.protein}g</span> · <span style="color:#f59e0b">C${f.carbs}g</span> · <span style="color:#8b5cf6">F${f.fats}g</span></div>
+      </div>
+      <span class="cat-badge" style="background:${CAT_CLR[f.category]||'#eee'}22;color:${CAT_CLR[f.category]||'#333'};">${f.category}</span>
+      <div class="food-cal">${f.calories}</div>
+    </div>`).join('');
+}
+
+function selectFood(id) {
+  state.selFood = state.foods.find(f=>f.id===id);
+  state.qty = 1;
+  document.getElementById('qtyInput').value = 1;
+  updateSelFoodUI();
+  buildFoodList();
+}
+
+function updateSelFoodUI() {
+  const f = state.selFood; const q = state.qty;
+  const card = document.getElementById('selFoodCard');
+  if (!f) { card.style.display='none'; return; }
+  card.style.display = 'block';
+  document.getElementById('sfEmoji').textContent = foodEmoji(f.name);
+  document.getElementById('sfName').textContent = f.name;
+  document.getElementById('sfPortion').textContent = f.portion;
+  document.getElementById('sfCal').textContent = Math.round(f.calories*q);
+  document.getElementById('sfP').textContent = (f.protein*q).toFixed(1);
+  document.getElementById('sfC').textContent = (f.carbs*q).toFixed(1);
+  document.getElementById('sfF').textContent = (f.fats*q).toFixed(1);
+}
+
+function changeQty(d) {
+  state.qty = Math.max(0.5, +(state.qty + d).toFixed(1));
+  document.getElementById('qtyInput').value = state.qty;
+  updateSelFoodUI();
+}
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'qtyInput') { state.qty = Math.max(0.1, +e.target.value); updateSelFoodUI(); }
+});
+
+async function addMealToLog() {
+  if (!state.selFood) { toast('Please select a food first','error'); return; }
+  const f = state.selFood; const q = state.qty;
+  try {
+    await api('/meals', { method:'POST', body: JSON.stringify({
+      meal_name: f.name, meal_type: state.selMeal,
+      calories: Math.round(f.calories*q),
+      protein: +(f.protein*q).toFixed(1),
+      carbs: +(f.carbs*q).toFixed(1),
+      fats: +(f.fats*q).toFixed(1),
+      quantity: q
+    })});
+    toast(`${f.name} added to ${state.selMeal}!`);
+    state.selFood = null;
+    updateSelFoodUI(); buildFoodList();
+    updateNutrSummary();
+  } catch { toast('Error adding meal','error'); }
+}
+
+function updateNutrSummary() {
+  loadDashboard();
+}
+
+// ─── MEAL TYPE TABS ────────────────────────────────────────────
+function buildMealTypeTabs() {
+  const el = document.getElementById('mealTypeTabs'); if(!el) return;
+  el.innerHTML = MEALS_LIST.map(m => `
+    <button class="meal-tab ${state.selMeal===m?'active':''}" onclick="setSelMeal('${m}')">${m}</button>`).join('');
+}
+
+function setSelMeal(m) {
+  state.selMeal = m;
+  document.getElementById('addMealLbl').textContent = m;
+  buildMealTypeTabs();
+}
+
+// ─── DIARY ─────────────────────────────────────────────────────
+async function buildDiary() {
+  const el = document.getElementById('diaryGrid'); if(!el) return;
+  let meals = [];
+  try { const {data} = await api('/dashboard'); meals = data.meals || []; } catch {}
+  el.innerHTML = MEALS_LIST.map(slot => {
+    const items = meals.filter(m=>m.meal_type===slot);
+    const kcal = items.reduce((s,m)=>s+Number(m.calories),0);
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-weight:700;font-size:14px;">${slot}</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="font-weight:700;color:#4CAF50;font-size:13px;">${Math.round(kcal)} kcal</span>
+          <button class="btn btn-primary btn-sm" onclick="showPage('nutrition');nutrTab('log');setSelMeal('${slot}')">+ Add</button>
+        </div>
+      </div>
+      ${items.length===0
+        ? '<div style="font-size:12px;color:#aaa;text-align:center;padding:10px 0;font-style:italic;">Nothing logged yet</div>'
+        : items.map(m=>`<div class="meal-log-item">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:16px;">${foodEmoji(m.meal_name)}</span>
+              <div><div class="meal-log-name">${m.meal_name}</div>
+              <div class="meal-log-meta">×${m.quantity} · P${m.protein}g C${m.carbs}g F${m.fats}g</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="meal-log-cal">${Math.round(m.calories)}</span>
+              <button class="btn-remove" onclick="delMeal(${m.id})">×</button>
+            </div>
+          </div>`).join('')
+      }
+    </div>`;
+  }).join('');
+}
+
+async function delMeal(id) {
+  try {
+    await api('/meals/'+id, {method:'DELETE'});
+    toast('Meal removed'); buildDiary(); loadDashboard();
+  } catch { toast('Error removing meal','error'); }
+}
+
+// ─── NUTRITION TABS ────────────────────────────────────────────
+function nutrTab(tab) {
+  ['log','diary','cardio'].forEach(t => {
+    document.getElementById('nutr-'+t).style.display = t===tab?'':'none';
+    const btn = document.getElementById('ntab-'+t);
+    if(btn) { btn.className = t===tab ? 'btn btn-primary btn-sm' : 'btn btn-sm'; btn.style.background = t===tab?'':'#f7f9f7'; btn.style.color = t===tab?'':'#333'; btn.style.border = t===tab?'':'1.5px solid #e0e0e0'; }
+  });
+  if (tab==='diary') buildDiary();
+  if (tab==='log') { buildMealTypeTabs(); buildFoodList(); }
+}
+
+// ─── CARDIO ────────────────────────────────────────────────────
+function buildCardioGrid() {
+  const el = document.getElementById('cardioGrid'); if(!el) return;
+  const w = state.user?.weight || 70;
+  document.getElementById('cardioWeight').textContent = w + ' kg';
+  el.innerHTML = CARDIO_DATA.map(ex => {
+    const burned = Math.round(ex.met * w * 30 / 60);
+    return `<div class="cardio-card" onclick="logCardio('${ex.name}',${ex.met})">
+      <div class="cardio-icon">${ex.icon}</div>
+      <div class="cardio-name">${ex.name}</div>
+      <div class="cardio-burn" id="cbr-${ex.name}">−${burned}</div>
+      <div class="cardio-lbl">kcal</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('cardioMins').addEventListener('input', function() {
+    const m = +this.value || 30;
+    CARDIO_DATA.forEach(ex => {
+      const el2 = document.getElementById('cbr-'+ex.name);
+      if(el2) el2.textContent = '−'+Math.round(ex.met*w*m/60);
+    });
+  });
+}
+
+async function logCardio(name, met) {
+  const mins = +document.getElementById('cardioMins').value || 30;
+  try {
+    const { data } = await api('/cardio', { method:'POST', body: JSON.stringify({activity:name, duration_min:mins, met}) });
+    state.cardioLogs.push({name, mins, burned: data.calories_burned});
+    toast(`${name} logged! −${data.calories_burned} kcal burned`);
+    buildCardioLogList();
+    loadDashboard();
+  } catch {
+    const burned = Math.round(met * (state.user?.weight||70) * mins / 60);
+    state.cardioLogs.push({name, mins, burned});
+    toast(`${name} logged! −${burned} kcal burned`);
+    buildCardioLogList();
+  }
+}
+
+function buildCardioLogList() {
+  if (!state.cardioLogs.length) return;
+  document.getElementById('cardioLogWrap').style.display = 'block';
+  document.getElementById('cardioLog').innerHTML = state.cardioLogs.map(l =>
+    `<div class="meal-log-item">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <span style="font-size:18px;">${CARDIO_DATA.find(c=>c.name===l.name)?.icon||'🏃'}</span>
+        <div><div class="meal-log-name">${l.name}</div><div class="meal-log-meta">${l.mins} min</div></div>
+      </div>
+      <div style="font-weight:800;color:#4CAF50;">−${l.burned} kcal</div>
+    </div>`).join('');
+  const total = state.cardioLogs.reduce((s,l)=>s+l.burned,0);
+  document.getElementById('cardioTotal').textContent = total + ' kcal';
+}
+
+// ─── WATER ─────────────────────────────────────────────────────
+function buildWaterGlasses() {
+  const el = document.getElementById('waterGlasses'); if(!el) return;
+  el.innerHTML = Array.from({length:8}).map((_,i) =>
+    `<button class="glass-btn ${i<state.water?'filled':''}" onclick="setWater(${i<state.water?i:i+1})" title="Glass ${i+1}">💧</button>`
+  ).join('');
+}
+
+function updateWaterUI(w) {
+  state.water = w;
+  document.getElementById('waterDisplay').textContent = w;
+  buildWaterGlasses();
+}
+
+async function setWater(g) {
+  try {
+    await api('/water', {method:'POST', body: JSON.stringify({glasses:g})});
+    updateWaterUI(g);
+  } catch {
+    updateWaterUI(g);
+  }
+}
+
+// ─── STEPS ─────────────────────────────────────────────────────
+async function updateSteps() {
+  const s = +document.getElementById('stepsInput').value || 0;
+  try {
+    await api('/steps', {method:'POST', body: JSON.stringify({steps:s})});
+    toast(`Steps updated: ${s.toLocaleString()}`);
+    document.getElementById('stepsDisplay').textContent = s.toLocaleString();
+    const p = Math.min(Math.round(s/10000*100),100);
+    document.getElementById('stepsBar').style.width = p+'%';
+    document.getElementById('stepsPct').textContent = p;
+  } catch { toast('Error updating steps','error'); }
+}
+
+// ─── WORKOUTS ──────────────────────────────────────────────────
+function buildWorkoutGrid() {
+  const el = document.getElementById('workoutGrid'); if(!el) return;
+  el.innerHTML = WORKOUTS.map(plan => `
+    <div class="workout-card">
+      <div class="workout-card-top" style="background:${plan.color};"></div>
+      <div class="workout-card-body">
+        <div style="font-size:24px;margin-bottom:6px;">${plan.icon}</div>
+        <div class="workout-name">${plan.name}</div>
+        <div class="workout-tag">${plan.tag}</div>
+        <span class="level-badge" style="background:${plan.color}22;color:${plan.color};">${plan.level}</span>
+        <div class="workout-meta">
+          <span>⏱ ${plan.dur}</span>
+          <span>🔥 ~${plan.cal} kcal</span>
+          <span>💪 ${plan.exs.length} exercises</span>
+        </div>
+        <div class="ex-list">
+          ${plan.exs.slice(0,3).map(ex=>`<div class="ex-item"><span>${ex.name}</span><span class="ex-sets">${ex.sets}×${ex.reps}</span></div>`).join('')}
+          ${plan.exs.length>3?`<div style="font-size:11px;color:#aaa;margin-top:4px;">+${plan.exs.length-3} more exercises</div>`:''}
+        </div>
+        <button class="btn btn-primary btn-full mt-16" onclick="startWorkout(${plan.id})">▶ Start Workout</button>
+      </div>
+    </div>`).join('');
+}
+
+function startWorkout(id) {
+  const plan = WORKOUTS.find(w=>w.id===id);
+  state.activeWorkout = plan; state.wktTimerSec = 0; state.wktPaused = false; state.doneSets = {};
+  document.getElementById('trainLibrary').style.display = 'none';
+  document.getElementById('activeWorkoutView').style.display = 'block';
+  document.getElementById('awName').textContent = plan.name;
+  document.getElementById('awTag').textContent = plan.tag;
+  buildExerciseCards(plan);
+  clearInterval(state.wktTimerInterval);
+  state.wktTimerInterval = setInterval(() => {
+    if (!state.wktPaused) { state.wktTimerSec++; document.getElementById('wktTimer').textContent = fmtTime(state.wktTimerSec); }
+  }, 1000);
+}
+
+function buildExerciseCards(plan) {
+  const el = document.getElementById('exerciseCards'); if(!el) return;
+  el.innerHTML = plan.exs.map((ex, ei) => {
+    const allDone = Array.from({length:ex.sets}).every((_,si)=>state.doneSets[`${ei}-${si}`]);
+    return `<div class="card" style="border:1.5px solid ${allDone?'#4CAF50':'#e0e0e0'};background:${allDone?'#e8f5e9':'#fff'};">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <div style="font-weight:700;font-size:14px;">${ex.name}</div>
+          <div style="font-size:11px;color:#aaa;margin-top:2px;">${ex.muscle}</div>
+        </div>
+        ${allDone?'<span style="background:#e8f5e9;border:1px solid #4CAF50;border-radius:6px;padding:2px 8px;font-size:10px;color:#2e7d32;font-weight:700;">✓ Done</span>':''}
+      </div>
+      <div class="set-grid">
+        ${Array.from({length:ex.sets}).map((_,si)=>{
+          const done = state.doneSets[`${ei}-${si}`];
+          return `<div class="set-btn ${done?'done':''}" onclick="toggleSet(${ei},${si},${plan.id})">
+            <div class="set-num">Set ${si+1}</div>
+            <div class="set-reps">${ex.reps}</div>
+            <div class="set-check">${done?'✅':'○'}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSet(ei, si, planId) {
+  const k = `${ei}-${si}`;
+  state.doneSets[k] = !state.doneSets[k];
+  buildExerciseCards(state.activeWorkout);
+}
+
+function toggleWktTimer() {
+  state.wktPaused = !state.wktPaused;
+  document.getElementById('wktPauseBtn').textContent = state.wktPaused ? '▶ Resume' : '⏸ Pause';
+}
+
+async function finishWorkout() {
+  clearInterval(state.wktTimerInterval);
+  const mins = Math.round(state.wktTimerSec/60);
+  const plan = state.activeWorkout;
+  try {
+    await api('/workouts', {method:'POST', body: JSON.stringify({
+      workout_name: plan.name, workout_type: 'Strength',
+      duration_min: mins, calories_burned: plan.cal, notes: plan.tag
+    })});
+    toast(`💪 ${plan.name} done! ${mins} min`);
+  } catch { toast(`💪 ${plan.name} done! ${mins} min`); }
+  document.getElementById('trainLibrary').style.display = '';
+  document.getElementById('activeWorkoutView').style.display = 'none';
+  state.activeWorkout = null;
+  loadDashboard();
+}
+
+function fmtTime(s) { return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+
+// ─── TOOLS ─────────────────────────────────────────────────────
+function calcBMI() {
+  const w = +document.getElementById('bmiWeight').value;
+  const h = +document.getElementById('bmiHeight').value/100;
+  if(!w||!h) return;
+  const bmi = (w/(h*h)).toFixed(1);
+  let cat,advice,col;
+  if(bmi<18.5){cat='Underweight';advice='Consider increasing caloric intake with nutrient-dense foods.';col='#2196F3';}
+  else if(bmi<25){cat='Normal Weight ✓';advice='Great! Maintain your current healthy lifestyle.';col='#4CAF50';}
+  else if(bmi<30){cat='Overweight';advice='Focus on a calorie deficit and regular exercise.';col='#ff9800';}
+  else{cat='Obese';advice='Consult a healthcare provider for a personalized plan.';col='#f44336';}
+  document.getElementById('bmiVal').textContent = bmi;
+  document.getElementById('bmiVal').style.color = col;
+  document.getElementById('bmiCat').textContent = cat;
+  document.getElementById('bmiCat').style.color = col;
+  document.getElementById('bmiAdvice').textContent = advice;
+  document.getElementById('bmiResult').style.display = 'block';
+}
+
+function calcBodyFat() {
+  const g=document.getElementById('bfGender').value;
+  const w=+document.getElementById('bfWeight').value;
+  const waist=+document.getElementById('bfWaist').value;
+  if(!w||!waist) return;
+  let bf = g==='male' ? ((waist*0.74)-(w*0.082+44.74)) : ((waist*0.74)-(w*0.082+34.89));
+  bf = Math.max(0,bf).toFixed(1);
+  let cat,col;
+  const bfn = +bf;
+  if(g==='male'){
+    if(bfn<6){cat='Essential Fat';col='#2196F3';}
+    else if(bfn<13){cat='Athletic';col='#4CAF50';}
+    else if(bfn<17){cat='Fitness';col='#8bc34a';}
+    else if(bfn<24){cat='Average';col='#ff9800';}
+    else{cat='Above Average';col='#f44336';}
+  } else {
+    if(bfn<14){cat='Essential Fat';col='#2196F3';}
+    else if(bfn<20){cat='Athletic';col='#4CAF50';}
+    else if(bfn<24){cat='Fitness';col='#8bc34a';}
+    else if(bfn<31){cat='Average';col='#ff9800';}
+    else{cat='Above Average';col='#f44336';}
+  }
+  document.getElementById('bfVal').textContent = bf+'%';
+  document.getElementById('bfVal').style.color = col;
+  document.getElementById('bfCat').textContent = cat;
+  document.getElementById('bfCat').style.color = col;
+  document.getElementById('bfAdvice').textContent = `Your body fat is in the ${cat.toLowerCase()} range for a ${g}.`;
+  document.getElementById('bfResult').style.display = 'block';
+}
+
+function calcTDEE() {
+  const w=+document.getElementById('tdeeW').value, h=+document.getElementById('tdeeH').value;
+  const age=+document.getElementById('tdeeAge').value, g=document.getElementById('tdeeG').value;
+  const act=+document.getElementById('tdeeA').value;
+  if(!w||!h||!age) return;
+  const bmr = g==='male' ? 10*w+6.25*h-5*age+5 : 10*w+6.25*h-5*age-161;
+  const tdee = Math.round(bmr*act);
+  document.getElementById('tdeeCards').innerHTML = [
+    {l:'BMR',v:Math.round(bmr),d:'At complete rest',c:'#3b82f6'},
+    {l:'TDEE (Maintain)',v:tdee,d:'Your maintenance',c:'#4CAF50'},
+    {l:'Cut (−500)',v:tdee-500,d:'For fat loss',c:'#f59e0b'},
+    {l:'Bulk (+300)',v:tdee+300,d:'For muscle gain',c:'#ef5350'},
+  ].map(t=>`<div style="background:#f7f9f7;border-radius:10px;padding:12px;border-left:4px solid ${t.c};">
+    <div style="font-size:9px;color:#aaa;text-transform:uppercase;">${t.l}</div>
+    <div style="font-size:22px;font-weight:800;color:${t.c};">${t.v}</div>
+    <div style="font-size:10px;color:#aaa;">${t.d}</div>
+  </div>`).join('');
+  document.getElementById('tdeeResult').style.display = 'block';
+}
+
+function calcMacros() {
+  const cal = +document.getElementById('macroCal').value; const goal = document.getElementById('macroGoal').value;
+  if(!cal) return;
+  let splits = { balanced:[0.30,0.45,0.25], lowcarb:[0.40,0.20,0.40], highcarb:[0.25,0.55,0.20] }[goal];
+  const p=Math.round(cal*splits[0]/4), c=Math.round(cal*splits[1]/4), f=Math.round(cal*splits[2]/9);
+  document.getElementById('macroCards').innerHTML = [
+    {l:'Protein',v:p+'g',s:Math.round(cal*splits[0])+' kcal',c:'#ef5350'},
+    {l:'Carbs',v:c+'g',s:Math.round(cal*splits[1])+' kcal',c:'#f59e0b'},
+    {l:'Fat',v:f+'g',s:Math.round(cal*splits[2])+' kcal',c:'#8b5cf6'},
+  ].map(m=>`<div style="text-align:center;background:#f7f9f7;border-radius:10px;padding:14px;border-top:4px solid ${m.c};">
+    <div style="font-size:9px;color:#aaa;text-transform:uppercase;">${m.l}</div>
+    <div style="font-size:26px;font-weight:800;color:${m.c};">${m.v}</div>
+    <div style="font-size:10px;color:#aaa;">${m.s}</div>
+  </div>`).join('');
+  document.getElementById('macroResult').style.display = 'block';
+}
+
+// ─── MEAL PLANS ────────────────────────────────────────────────
+function buildMealPlans() {
+  const el = document.getElementById('mealPlansGrid'); if(!el) return;
+  el.innerHTML = MEAL_PLANS.map(plan => `
+    <div class="plan-card">
+      <div class="plan-card-top" style="background:${plan.color};"></div>
+      <div class="plan-body">
+        <div class="plan-name">${plan.name}</div>
+        <div class="plan-goal">${plan.goal} · ${plan.cal} kcal/day</div>
+        ${plan.meals.map(m=>`<div class="plan-meal"><span class="plan-time">${m.t}</span><div><strong>${m.m}</strong><br><span style="color:#555;font-size:11px;">${m.i}</span></div></div>`).join('')}
+        <button class="btn btn-outline btn-full mt-16" onclick="toast('${plan.name} activated! 🎯')">Activate Plan</button>
+      </div>
+    </div>`).join('');
+}
+
+async function loadWktHistory() {
+  const el = document.getElementById('wktHistoryList'); if(!el) return;
+  try {
+    const {data} = await api('/workouts');
+    if(!data.length){ el.innerHTML='<div style="color:#aaa;font-size:13px;">No workouts logged yet.</div>'; return; }
+    el.innerHTML = `<div class="grid-4" style="gap:12px;">${data.map(w=>`
+      <div class="card" style="padding:14px;">
+        <div style="font-size:11px;color:#aaa;">${new Date(w.logged_at).toLocaleDateString()}</div>
+        <div style="font-weight:700;font-size:13px;margin:4px 0;">${w.workout_name}</div>
+        <div style="font-size:11px;color:#4CAF50;">${w.duration_min} min · ${Math.round(w.calories_burned)} kcal</div>
+      </div>`).join('')}</div>`;
+  } catch { el.innerHTML='<div style="color:#aaa;font-size:13px;">Connect backend to see history.</div>'; }
+}
+
+// ─── INSIGHTS ──────────────────────────────────────────────────
+async function loadInsights() {
+  const iStats = document.getElementById('insightStats'); if(!iStats) return;
+  try {
+    const {data} = await api('/insights');
+    const wCal = data.dailyCalories?.reduce((s,d)=>s+Number(d.cal||0),0)||0;
+    iStats.innerHTML = [
+      {l:'Total Calories (30d)',v:Math.round(wCal).toLocaleString(),i:'🍽️',c:'#4CAF50'},
+      {l:'Cardio Sessions',v:data.cardio?.sessions||0,i:'🏃',c:'#2196F3'},
+      {l:'Calories Burned',v:Math.round(data.cardio?.total_burned||0),i:'🔥',c:'#f97316'},
+      {l:'Workouts Done',v:data.workouts?.total_workouts||0,i:'💪',c:'#8b5cf6'},
+    ].map(s=>`<div class="stat-card" style="border-top-color:${s.c};">
+      <div class="stat-icon">${s.i}</div>
+      <div class="stat-value" style="color:${s.c};">${s.v}</div>
+      <div class="stat-label">${s.l}</div>
+    </div>`).join('');
+
+    // 30-day chart
+    const maxCal = Math.max(...(data.dailyCalories?.map(d=>Number(d.cal||0))||[2000]),1);
+    document.getElementById('insightChart').innerHTML = (data.dailyCalories||[]).map(d=>{
+      const h = Math.round((Number(d.cal||0)/maxCal)*100);
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:100%;border-radius:3px 3px 0 0;background:#4CAF50;height:${h}px;" title="${Math.round(d.cal)} kcal"></div>
+        <div style="font-size:8px;color:#aaa;">${new Date(d.day).getDate()}</div>
+      </div>`;
+    }).join('') || '<div style="color:#aaa;font-size:13px;padding:20px;">Log meals to see your trend.</div>';
+  } catch {
+    iStats.innerHTML = '<div style="color:#aaa;font-size:13px;grid-column:1/-1;">Connect backend to see insights.</div>';
+  }
+
+  // Streak
+  const sg = document.getElementById('streakGrid');
+  if(sg) {
+    const days = ['M','T','W','T','F','S','S'];
+    sg.innerHTML = days.map(d=>`<div style="width:36px;height:36px;border-radius:8px;background:#4CAF50;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;">${d}</div>`).join('');
+    sg.insertAdjacentHTML('beforeend','<p style="width:100%;font-size:12px;color:#4CAF50;font-weight:700;margin-top:8px;">🔥 7-Day Streak!</p>');
+  }
+}
+
+// ─── PROFILE ───────────────────────────────────────────────────
+async function buildProfile() {
+  let user = state.user;
+  try { const {data} = await api('/profile'); user = data; state.user = data; } catch {}
+
+  document.getElementById('profAvatar').textContent = user.name?.[0]?.toUpperCase()||'?';
+  document.getElementById('profName').textContent = user.name;
+  document.getElementById('profGoalLabel').textContent = {lose:'🎯 Fat Loss',gain:'💪 Muscle Gain',maintain:'⚖️ Maintenance'}[user.goal]||'';
+  document.getElementById('profWeight').textContent = user.weight||'—';
+  document.getElementById('profHeight').textContent = user.height||'—';
+  document.getElementById('profAge').textContent = user.age||'—';
+  document.getElementById('editName').value = user.name||'';
+  document.getElementById('editWeight').value = user.weight||'';
+  document.getElementById('editHeight').value = user.height||'';
+  document.getElementById('editAge').value = user.age||'';
+  document.getElementById('editGoal').value = user.goal||'maintain';
+  document.getElementById('editActivity').value = user.activity_level||'1.55';
+
+  // Calorie targets
+  const bmr = user.gender==='female' ? 10*user.weight+6.25*user.height-5*user.age-161 : 10*(user.weight||70)+6.25*(user.height||170)-5*(user.age||25)+5;
+  const actM = {1.2:1.2,1.375:1.375,1.55:1.55,1.725:1.725,1.9:1.9};
+  const tdee = Math.round(bmr*(actM[user.activity_level]||1.55));
+  const cur = user.calorie_goal||2000;
+  document.getElementById('calTargets').innerHTML = [
+    {l:'BMR',v:Math.round(bmr),d:'At rest',c:'#3b82f6'},
+    {l:'TDEE',v:tdee,d:'Maintenance',c:'#4CAF50'},
+    {l:'Cut −500',v:tdee-500,d:'Fat loss',c:'#f59e0b'},
+    {l:'Bulk +300',v:tdee+300,d:'Gain muscle',c:'#ef5350'},
+  ].map(t=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 11px;border-radius:8px;margin-bottom:5px;background:${cur===t.v?t.c+'18':'#f7f9f7'};border:1.5px solid ${cur===t.v?t.c+'55':'#e0e0e0'};cursor:pointer;" onclick="setGoal(${t.v})">
+    <div><div style="font-size:12px;font-weight:700;color:${cur===t.v?t.c:'#333'};">${t.l}</div><div style="font-size:10px;color:#aaa;">${t.d}</div></div>
+    <div style="font-size:18px;font-weight:800;color:${t.c};">${t.v}</div>
+  </div>`).join('');
+
+  // Achievements
+  const achs = [
+    {i:'🔥',t:'7-Day Streak',u:true},{i:'💧',t:'Hydration Pro',u:state.water>=8},{i:'🏋',t:'Gym Rat',u:false},
+    {i:'🥗',t:'Clean Eater',u:true},{i:'⚡',t:'HIIT Hero',u:state.cardioLogs.some(c=>c.name==='HIIT')},
+    {i:'🎯',t:'Goal Crusher',u:false},{i:'👟',t:'10K Steps',u:false},{i:'🏆',t:'Fitness Pro',u:false},
+  ];
+  document.getElementById('achievementGrid').innerHTML = achs.map(a=>
+    `<div class="achievement ${a.u?'unlocked':''}">
+      <div class="ach-icon" style="filter:${a.u?'none':'grayscale(1)'}">${a.i}</div>
+      <div class="ach-name">${a.t}</div>
+    </div>`).join('');
+}
+
+async function saveProfile() {
+  const updates = {
+    name: document.getElementById('editName').value,
+    weight: +document.getElementById('editWeight').value||undefined,
+    height: +document.getElementById('editHeight').value||undefined,
+    age: +document.getElementById('editAge').value||undefined,
+    goal: document.getElementById('editGoal').value,
+    activity_level: +document.getElementById('editActivity').value,
+  };
+  try {
+    await api('/profile', {method:'PUT', body: JSON.stringify(updates)});
+    Object.assign(state.user, updates);
+    localStorage.setItem('fitx_user', JSON.stringify(state.user));
+    toast('Profile saved successfully!');
+    buildProfile();
+  } catch { toast('Error saving profile','error'); }
+}
+
+function setGoal(cal) {
+  state.user.calorie_goal = cal;
+  saveProfile();
+  buildProfile();
+}
+
+// ─── INIT ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', checkAuth);
+</script>
+</body>
+</html>

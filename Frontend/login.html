@@ -33,7 +33,9 @@
   </div>
 </div>
 <script>
-const API='https://fitx-57um.onrender.com';
+
+const API='https://fitx-57um.onrender.com/api';
+
 function togglePwd(){const i=document.getElementById('password'),e=document.getElementById('eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
 document.getElementById('loginForm').addEventListener('submit',async e=>{
   e.preventDefault();const btn=document.getElementById('loginBtn'),err=document.getElementById('err');

@@ -71,7 +71,9 @@
   </div>
 </div>
 <script>
-const API='https://fitx-57um.onrender.com';
+  
+const API='https://fitx-57um.onrender.com/api';
+
 let selectedGoal='maintain';
 function selectGoal(v){selectedGoal=v;document.querySelectorAll('.goal-card').forEach(c=>{c.classList.remove('selected');c.querySelector('.goal-check').style.opacity='0';});const c=document.querySelector(`[data-val="${v}"]`);c.classList.add('selected');c.querySelector('.goal-check').style.opacity='1';c.querySelector('.goal-check').style.color='var(--green)';}
 function toStep(n){if(n===2){if(!document.getElementById('name').value.trim()){alert('Enter your name');return;}if(!document.getElementById('email').value.trim()){alert('Enter your email');return;}if(document.getElementById('password').value.length<6){alert('Password must be at least 6 characters');return;}}[1,2,3].forEach(i=>{document.getElementById('p'+i).classList.remove('active');document.getElementById('s'+i).classList.remove('done');});document.getElementById('p'+n).classList.add('active');for(let i=1;i<=n;i++)document.getElementById('s'+i).classList.add('done');}

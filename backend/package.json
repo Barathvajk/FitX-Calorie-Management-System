@@ -1,7 +1,6 @@
 {
   "name": "fitx-backend",
-  "version": "2.0.0",
-  "description": "FITX Fitness & Calorie Tracking Backend",
+  "version": "3.0.0",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

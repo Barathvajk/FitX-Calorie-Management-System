@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>FITX Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="form-card">
+        <h1>Create FIT<span style="color: lightgreen;">X</span> Account</h1>
+        <p>Fill in your details to start tracking your daily calories and fitness goals.</p>
+
+        <form id="registerForm">
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="number" id="age" placeholder="Age">
+            <input type="number" id="height" placeholder="Height (cm)">
+            <input type="number" id="weight" placeholder="Weight (kg)">
+            <select id="activity_level">
+                <option value="" disabled selected>Select Activity Level</option>
+                <option value="1.2">Sedentary</option>
+                <option value="1.375">Lightly active</option>
+                <option value="1.55">Moderately active</option>
+                <option value="1.725">Very active</option>
+            </select>
+            <button type="submit">Register</button>
+        </form>
+
+        <p class="form-footer">Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -81,7 +81,10 @@ const updateProfile = async (req, res) => {
       updates.calorie_goal = calculateGoalCalories(tdee, merged.goal);
     }
     await User.update(req.user.id, updates);
-    res.json({ message: 'Profile updated successfully.' });
+    // Return updated user
+    const updated = await User.findById(req.user.id);
+    const { password: _, ...safeUser } = updated;
+    res.json({ message: 'Profile updated successfully.', user: safeUser });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error updating profile.' });

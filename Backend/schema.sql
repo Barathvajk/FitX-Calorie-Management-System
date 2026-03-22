@@ -242,4 +242,4 @@ INSERT IGNORE INTO food_items (name, portion, calories, protein, carbs, fats, fi
 ('Chole Chana Masala','1 cup serving',270,13,42,6,10,'Indian Dishes'),
 ('Masala Omelette','2 eggs',180,13,4,12,1,'Protein');
 
-SELECT 'FITX v3.0 Database ready!' AS status;
+SELECT 'FITX Database ready!' AS status;

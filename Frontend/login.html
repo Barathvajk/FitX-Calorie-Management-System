@@ -1,28 +1,49 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>FITX Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Login — FITX</title><link rel="stylesheet" href="style.css"><style>body{padding-bottom:0;}</style></head>
 <body>
-
-<div class="container">
-    <div class="form-card">
-        <h1>Login to FIT<span style="color: lightgreen;">X</span></h1>
-        <p>Enter your credentials to access your dashboard and track your calories.</p>
-
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-
-        <p class="form-footer">Don't have an account? <a href="register.html">Register here</a></p>
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand"><div class="logo-icon">FX</div><div class="logo-text">FIT<span>X</span></div></div>
+    <h1 class="auth-headline">Track. Train.<br><span>Transform.</span></h1>
+    <p class="auth-subtext">Your all-in-one fitness companion. Log meals, crush workouts, and hit your goals every day.</p>
+    <div class="auth-features">
+      <div class="auth-feature"><div class="auth-feature-dot">🥗</div>Smart calorie & macro tracking</div>
+      <div class="auth-feature"><div class="auth-feature-dot">🏋️</div>Hevy-style workout logging</div>
+      <div class="auth-feature"><div class="auth-feature-dot">🤖</div>AI Diet Coach powered by Claude</div>
+      <div class="auth-feature"><div class="auth-feature-dot">📊</div>30-day insights & analytics</div>
+      <div class="auth-feature"><div class="auth-feature-dot">📷</div>Barcode food scanner</div>
     </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <h2>Welcome back 👋</h2>
+      <p class="auth-sub">Sign in to your FITX account</p>
+      <form id="loginForm">
+        <div class="form-group"><label>Email</label><input class="form-control" type="email" id="email" placeholder="you@example.com" required autocomplete="email"></div>
+        <div class="form-group"><label>Password</label>
+          <div style="position:relative;"><input class="form-control" type="password" id="password" placeholder="Your password" required style="padding-right:44px;" autocomplete="current-password">
+          <button type="button" onclick="togglePwd()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:rgba(255,255,255,.35);" id="eye">👁</button></div>
+        </div>
+        <div class="auth-error" id="err"></div>
+        <button class="btn btn-primary btn-full" type="submit" id="loginBtn" style="height:46px;font-size:15px;">Sign In to FITX</button>
+      </form>
+      <p class="auth-footer" style="margin-top:24px;">No account? <a href="register.html">Create one free →</a></p>
+    </div>
+  </div>
 </div>
-
-<script src="script.js"></script>
-</body>
-</html>
+<script>
+const API='https://fitx-57um.onrender.com';
+function togglePwd(){const i=document.getElementById('password'),e=document.getElementById('eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
+document.getElementById('loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();const btn=document.getElementById('loginBtn'),err=document.getElementById('err');
+  btn.classList.add('loading');btn.innerHTML='';err.style.display='none';
+  try{
+    const res=await fetch(`${API}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('email').value,password:document.getElementById('password').value})});
+    const data=await res.json();
+    if(res.ok){localStorage.setItem('fitx_token',data.token);localStorage.setItem('fitx_user',JSON.stringify(data.user));btn.textContent='✓ Success!';setTimeout(()=>window.location.href='index.html',400);}
+    else{err.textContent=data.message||'Login failed';err.style.display='block';btn.classList.remove('loading');btn.textContent='Sign In to FITX';}
+  }catch{err.textContent='Cannot connect — is backend running on port 5000?';err.style.display='block';btn.classList.remove('loading');btn.textContent='Sign In to FITX';}
+});
+</script>
+</body></html>

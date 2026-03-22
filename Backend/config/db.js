@@ -1,14 +1,20 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
+console.log('MYSQL_URL exists:', !!process.env.MYSQL_URL);
+console.log('MYSQL_URL preview:', process.env.MYSQL_URL?.substring(0, 30));
+
 let poolConfig;
 
 if (process.env.MYSQL_URL) {
-  // Parse the MySQL URL manually
   const url = new URL(process.env.MYSQL_URL);
+  console.log('Parsed host:', url.hostname);
+  console.log('Parsed port:', url.port);
+  console.log('Parsed user:', url.username);
+  console.log('Parsed db:', url.pathname.replace('/', ''));
   poolConfig = {
     host:     url.hostname,
-    port:     url.port || 3306,
+    port:     Number(url.port) || 3306,
     user:     url.username,
     password: url.password,
     database: url.pathname.replace('/', ''),

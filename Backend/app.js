@@ -11,6 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use(express.static(path.join(__dirname, '../Frontend')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../Frontend/index.html')));
+
 
 app.use('/api', require('./routes/authRoutes'));
 app.use('/api', require('./routes/calorieRoutes'));
@@ -18,7 +20,7 @@ app.use('/api', require('./routes/aiRoutes'));
 app.use('/api', require('./routes/progressRoutes'));
 app.use('/api', require('./routes/socialRoutes'));
 
-app.get('/api/health', (req, res) => res.json({ status: 'FITX API v3.0 ✅', timestamp: new Date() }));
+app.get('/api/health', (req, res) => res.json({ status: 'FITX API ✅', timestamp: new Date() }));
 app.use((err, req, res, next) => { console.error(err.message); res.status(500).json({ message: 'Server error' }); });
 
 // Catch-all serve Frontend

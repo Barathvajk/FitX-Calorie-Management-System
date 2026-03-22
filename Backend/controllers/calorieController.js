@@ -14,9 +14,13 @@ const addMeal = async (req, res) => {
     await Meal.create({ user_id: req.user.id, meal_name, meal_type: mealType,
       calories: Number(calories)||0, protein: Number(protein)||0, carbs: Number(carbs)||0,
       fats: Number(fats)||0, fiber: Number(fiber)||0, quantity: Number(quantity)||1, food_id: food_id||null });
-    // Track recent foods
+    // Track recent foods — silently ignore FK errors
     if (food_id) {
-      await db.query(`INSERT INTO recent_foods (user_id,food_id) VALUES (?,?) ON DUPLICATE KEY UPDATE used_at=NOW()`, [req.user.id, food_id]);
+      try {
+        await db.query(`INSERT INTO recent_foods (user_id,food_id) VALUES (?,?) ON DUPLICATE KEY UPDATE used_at=NOW()`, [req.user.id, food_id]);
+      } catch(e) {
+        console.log('recent_foods skip:', e.message);
+      }
     }
     res.status(201).json({ message: 'Meal logged!' });
   } catch (err) {
